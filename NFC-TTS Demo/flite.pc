@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: flite
+Description: A small, fast run time speech synthesis engine
+Version: 2.1 # Adjust based on the actual version of Flite you have installed
+Libs: -L${libdir} -lflite -lflite_cmu_us_kal -lflite_usenglish -lflite_cmulex -lflite_cmu_indic_lang -lflite_cmu_grapheme_lang -lflite_cmu_indic_lex -lflite_cmu_grapheme_lex
+Cflags: -I${includedir}/flite

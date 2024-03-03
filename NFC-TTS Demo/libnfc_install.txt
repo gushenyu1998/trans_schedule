@@ -1,0 +1,834 @@
+parallels@debian-gnu-linux-12:~$ sudo apt-get install build-essential autoconf automake libtool pkg-config
+[sudo] password for parallels:
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+build-essential is already the newest version (12.9).
+build-essential set to manually installed.
+autoconf is already the newest version (2.71-3).
+autoconf set to manually installed.
+automake is already the newest version (1:1.16.5-1.3).
+automake set to manually installed.
+libtool is already the newest version (2.4.7-5).
+libtool set to manually installed.
+pkg-config is already the newest version (1.8.1-1).
+pkg-config set to manually installed.
+The following packages were automatically installed and are no longer required:
+  libnfc6 libusb-0.1-4
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 62 not upgraded.
+parallels@debian-gnu-linux-12:~$ cd
+parallels@debian-gnu-linux-12:~$ ls
+cmpt433  Documents  glib-2.79.1  Music    Pictures  setupInternet.sh  Videos
+Desktop  Downloads  libnfc       nfcTest  Public    Templates
+parallels@debian-gnu-linux-12:~$ mkdir ~/libnfc-build
+cd ~/libnfc-build
+parallels@debian-gnu-linux-12:~/libnfc-build$ git clone https://github.com/nfc-tools/libnfc.git
+cd libnfc
+Cloning into 'libnfc'...
+remote: Enumerating objects: 14782, done.
+remote: Counting objects: 100% (2941/2941), done.
+remote: Compressing objects: 100% (111/111), done.
+remote: Total 14782 (delta 2865), reused 2831 (delta 2830), pack-reused 11841
+Receiving objects: 100% (14782/14782), 2.47 MiB | 5.22 MiB/s, done.
+Resolving deltas: 100% (11610/11610), done.
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$ autoreconf -vis
+autoreconf: export WARNINGS=
+autoreconf: Entering directory '.'
+autoreconf: configure.ac: not using Gettext
+autoreconf: running: aclocal -I m4
+autoreconf: configure.ac: tracing
+autoreconf: running: libtoolize
+libtoolize: putting auxiliary files in '.'.
+libtoolize: linking file './ltmain.sh'
+libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
+libtoolize: linking file 'm4/libtool.m4'
+libtoolize: linking file 'm4/ltoptions.m4'
+libtoolize: linking file 'm4/ltsugar.m4'
+libtoolize: linking file 'm4/ltversion.m4'
+libtoolize: linking file 'm4/lt~obsolete.m4'
+autoreconf: configure.ac: not using Intltool
+autoreconf: configure.ac: not using Gtkdoc
+autoreconf: running: aclocal -I m4
+autoreconf: running: /usr/bin/autoconf
+configure.ac:8: warning: The macro `AC_CONFIG_HEADER' is obsolete.
+configure.ac:8: You should run autoupdate.
+./lib/autoconf/status.m4:719: AC_CONFIG_HEADER is expanded from...
+configure.ac:8: the top level
+configure.ac:45: warning: The macro `AC_HEADER_STDC' is obsolete.
+configure.ac:45: You should run autoupdate.
+./lib/autoconf/headers.m4:704: AC_HEADER_STDC is expanded from...
+configure.ac:45: the top level
+autoreconf: running: /usr/bin/autoheader
+autoreconf: running: automake --add-missing --no-force
+configure.ac:17: installing './ar-lib'
+configure.ac:17: installing './compile'
+configure.ac:27: installing './config.guess'
+configure.ac:27: installing './config.sub'
+configure.ac:16: installing './install-sh'
+configure.ac:16: installing './missing'
+examples/Makefile.am: installing './depcomp'
+parallel-tests: installing './test-driver'
+autoreconf: Leaving directory '.'
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$ ./configure --host=arm-linux-gnueabihf  --prefix=/usr --sysconfdir=/etc
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for arm-linux-gnueabihf-strip... arm-linux-gnueabihf-strip
+checking for a race-free mkdir -p... /usr/bin/mkdir -p
+checking for gawk... no
+checking for mawk... mawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking whether make supports the include directive... yes (GNU style)
+checking for arm-linux-gnueabihf-gcc... arm-linux-gnueabihf-gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables...
+checking whether we are cross compiling... yes
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether arm-linux-gnueabihf-gcc accepts -g... yes
+checking for arm-linux-gnueabihf-gcc option to enable C11 features... none needed
+checking whether arm-linux-gnueabihf-gcc understands -c and -o together... yes
+checking dependency style of arm-linux-gnueabihf-gcc... gcc3
+checking for arm-linux-gnueabihf-ar... arm-linux-gnueabihf-ar
+checking the archiver (arm-linux-gnueabihf-ar) interface... ar
+checking whether make supports nested variables... (cached) yes
+checking for arm-linux-gnueabihf-gcc... (cached) arm-linux-gnueabihf-gcc
+checking whether the compiler supports GNU C... (cached) yes
+checking whether arm-linux-gnueabihf-gcc accepts -g... (cached) yes
+checking for arm-linux-gnueabihf-gcc option to enable C11 features... (cached) none needed
+checking whether arm-linux-gnueabihf-gcc understands -c and -o together... (cached) yes
+checking dependency style of arm-linux-gnueabihf-gcc... (cached) gcc3
+checking whether make sets $(MAKE)... (cached) yes
+checking build system type... aarch64-unknown-linux-gnu
+checking host system type... arm-unknown-linux-gnueabihf
+checking how to print strings... printf
+checking for a sed that does not truncate output... /usr/bin/sed
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for fgrep... /usr/bin/grep -F
+checking for ld used by arm-linux-gnueabihf-gcc... /usr/arm-linux-gnueabihf/bin/ld
+checking if the linker (/usr/arm-linux-gnueabihf/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/arm-linux-gnueabihf-nm -B
+checking the name lister (/usr/bin/arm-linux-gnueabihf-nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking how to convert aarch64-unknown-linux-gnu file names to arm-unknown-linux-gnueabihf format... func_convert_file_noop
+checking how to convert aarch64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop
+checking for /usr/arm-linux-gnueabihf/bin/ld option to reload object files... -r
+checking for arm-linux-gnueabihf-file... no
+checking for file... file
+configure: WARNING: using cross tools not prefixed with host triplet
+checking for arm-linux-gnueabihf-objdump... arm-linux-gnueabihf-objdump
+checking how to recognize dependent libraries... pass_all
+checking for arm-linux-gnueabihf-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for arm-linux-gnueabihf-ar... (cached) arm-linux-gnueabihf-ar
+checking for archiver @FILE support... @
+checking for arm-linux-gnueabihf-strip... (cached) arm-linux-gnueabihf-strip
+checking for arm-linux-gnueabihf-ranlib... arm-linux-gnueabihf-ranlib
+checking command to parse /usr/bin/arm-linux-gnueabihf-nm -B output from arm-linux-gnueabihf-gcc object... ok
+checking for sysroot... no
+checking for a working dd... /usr/bin/dd
+checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
+checking for arm-linux-gnueabihf-mt... no
+checking for mt... mt
+checking if mt is a manifest tool... no
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if arm-linux-gnueabihf-gcc supports -fno-rtti -fno-exceptions... no
+checking for arm-linux-gnueabihf-gcc option to produce PIC... -fPIC -DPIC
+checking if arm-linux-gnueabihf-gcc PIC flag -fPIC -DPIC works... yes
+checking if arm-linux-gnueabihf-gcc static flag -static works... yes
+checking if arm-linux-gnueabihf-gcc supports -c -o file.o... yes
+checking if arm-linux-gnueabihf-gcc supports -c -o file.o... (cached) yes
+checking whether the arm-linux-gnueabihf-gcc linker (/usr/arm-linux-gnueabihf/bin/ld) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking for arm-linux-gnueabihf-pkg-config... no
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+checking for egrep... (cached) /usr/bin/grep -E
+checking for _Bool... yes
+checking for stdbool.h that conforms to C99... yes
+checking for fcntl.h... yes
+checking for limits.h... yes
+checking for stdio.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for stdint.h... (cached) yes
+checking for stddef.h... yes
+checking for stdbool.h... (cached) yes
+checking for sys/ioctl.h... yes
+checking for sys/param.h... yes
+checking for sys/time.h... yes
+checking for termios.h... yes
+checking for linux/spi/spidev.h... yes
+checking for linux/i2c-dev.h... yes
+checking for linux_nfc_api.h... no
+checking for memmove... yes
+checking for memset... yes
+checking for select... yes
+checking for strdup... yes
+checking for strerror... yes
+checking for strstr... yes
+checking for strtol... yes
+checking for usleep... yes
+checking for size_t... yes
+checking for uint8_t... yes
+checking for uint16_t... yes
+checking for uint32_t... yes
+checking for uint64_t... yes
+checking for int16_t... yes
+checking for int32_t... yes
+checking for off_t... yes
+checking for log flag... yes
+checking for conffiles flag... yes
+checking for envvars flag... yes
+checking for debug flag... no
+checking which drivers to build... default drivers
+checking for library containing clock_gettime... none required
+checking for documentation request... no
+checking for example build... yes
+checking for libusb... no
+checking for libusb-legacy... no
+checking for libusb-config... /usr/bin/libusb-config
+checking for readline.h... not found
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Doxyfile
+config.status: creating Makefile
+config.status: creating cmake/Makefile
+config.status: creating cmake/modules/Makefile
+config.status: creating contrib/Makefile
+config.status: creating contrib/devd/Makefile
+config.status: creating contrib/libnfc/Makefile
+config.status: creating contrib/linux/Makefile
+config.status: creating contrib/udev/Makefile
+config.status: creating contrib/win32/Makefile
+config.status: creating contrib/win32/sys/Makefile
+config.status: creating contrib/win32/libnfc/Makefile
+config.status: creating contrib/win32/libnfc/buses/Makefile
+config.status: creating examples/Makefile
+config.status: creating examples/pn53x-tamashell-scripts/Makefile
+config.status: creating include/Makefile
+config.status: creating include/nfc/Makefile
+config.status: creating libnfc.pc
+config.status: creating libnfc/Makefile
+config.status: creating libnfc/buses/Makefile
+config.status: creating libnfc/chips/Makefile
+config.status: creating libnfc/drivers/Makefile
+config.status: creating test/Makefile
+config.status: creating utils/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+
+Selected drivers:
+   pcsc............. no
+   acr122_pcsc...... no
+   acr122_usb....... yes
+   acr122s.......... yes
+   arygon........... yes
+   pn53x_usb........ yes
+   pn532_uart....... yes
+   pn532_spi.......  yes
+   pn532_i2c........ yes
+   pn71xx........... no
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$ cmake .
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+-- The C compiler identification is GNU 12.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE)
+-- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1")
+-- Checking for module 'libusb'
+--   Package 'libusb', required by 'virtual:world', not found
+CMake Error at /usr/share/cmake-3.25/Modules/FindPkgConfig.cmake:607 (message):
+  A required package was not found
+Call Stack (most recent call first):
+  /usr/share/cmake-3.25/Modules/FindPkgConfig.cmake:829 (_pkg_check_modules_internal)
+  cmake/modules/FindLIBUSB.cmake:44 (PKG_CHECK_MODULES)
+  cmake/modules/LibnfcDrivers.cmake:29 (FIND_PACKAGE)
+  CMakeLists.txt:152 (INCLUDE)
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/parallels/libnfc-build/libnfc/CMakeFiles/CMakeOutput.log".
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$ sudo apt-get update
+sudo apt-get install libusb-1.0-0-dev
+Get:1 http://packages.microsoft.com/repos/code stable InRelease [3,589 B]
+Get:2 http://security.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Hit:3 http://deb.debian.org/debian bookworm InRelease
+Get:4 http://packages.microsoft.com/repos/code stable/main amd64 Packages [17.4 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:6 http://packages.microsoft.com/repos/code stable/main arm64 Packages [17.4 kB]
+Get:7 http://packages.microsoft.com/repos/code stable/main armhf Packages [17.4 kB]
+Get:8 http://security.debian.org/debian-security bookworm-security/main Sources [82.7 kB]
+Get:9 http://security.debian.org/debian-security bookworm-security/main arm64 Packages [141 kB]
+Fetched 383 kB in 0s (885 kB/s)
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following packages were automatically installed and are no longer required:
+  libnfc6 libusb-0.1-4
+Use 'sudo apt autoremove' to remove them.
+The following additional packages will be installed:
+  libusb-1.0-doc
+The following NEW packages will be installed:
+  libusb-1.0-0-dev libusb-1.0-doc
+0 upgraded, 2 newly installed, 0 to remove and 62 not upgraded.
+Need to get 276 kB of archives.
+After this operation, 1,965 kB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://deb.debian.org/debian bookworm/main arm64 libusb-1.0-0-dev arm64 2:1.0.26-1 [83.0 kB]
+Get:2 http://deb.debian.org/debian bookworm/main arm64 libusb-1.0-doc all 2:1.0.26-1 [193 kB]
+Fetched 276 kB in 0s (1,657 kB/s)
+Selecting previously unselected package libusb-1.0-0-dev:arm64.
+(Reading database ... 232882 files and directories currently installed.)
+Preparing to unpack .../libusb-1.0-0-dev_2%3a1.0.26-1_arm64.deb ...
+Unpacking libusb-1.0-0-dev:arm64 (2:1.0.26-1) ...
+Selecting previously unselected package libusb-1.0-doc.
+Preparing to unpack .../libusb-1.0-doc_2%3a1.0.26-1_all.deb ...
+Unpacking libusb-1.0-doc (2:1.0.26-1) ...
+Setting up libusb-1.0-doc (2:1.0.26-1) ...
+Setting up libusb-1.0-0-dev:arm64 (2:1.0.26-1) ...
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$ cmake .
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE)
+-- Checking for module 'libusb'
+--   Package 'libusb', required by 'virtual:world', not found
+CMake Error at /usr/share/cmake-3.25/Modules/FindPkgConfig.cmake:607 (message):
+  A required package was not found
+Call Stack (most recent call first):
+  /usr/share/cmake-3.25/Modules/FindPkgConfig.cmake:829 (_pkg_check_modules_internal)
+  cmake/modules/FindLIBUSB.cmake:44 (PKG_CHECK_MODULES)
+  cmake/modules/LibnfcDrivers.cmake:29 (FIND_PACKAGE)
+  CMakeLists.txt:152 (INCLUDE)
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/parallels/libnfc-build/libnfc/CMakeFiles/CMakeOutput.log".
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$ cmake
+Usage
+
+  cmake [options] <path-to-source>
+  cmake [options] <path-to-existing-build>
+  cmake [options] -S <path-to-source> -B <path-to-build>
+
+Specify a source directory to (re-)generate a build system for it in the
+current working directory.  Specify an existing build directory to
+re-generate its build system.
+
+Run 'cmake --help' for more information.
+
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$ make
+make  all-recursive
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc'
+Making all in libnfc
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc'
+Making all in chips
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/chips'
+  CC       libnfcchips_la-pn53x.lo
+pn53x.c: In function 'pn53x_initiator_select_passive_target_ext':
+pn53x.c:1220:113: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1220 |           log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "got expected timeout on iClass activate all");
+      |                                                                                                                 ^
+pn53x.c:1230:95: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1230 |           log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "timeout on iClass anticol");
+      |                                                                                               ^
+pn53x.c:1235:95: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1235 |           log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "timeout on iClass get UID");
+      |                                                                                               ^
+pn53x.c: In function 'pn53x_ISO14443B_ICLASS_is_present':
+pn53x.c:2269:107: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 2269 |     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "got expected timeout on iClass activate all");
+      |                                                                                                           ^
+pn53x.c:2275:89: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 2275 |     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "timeout on iClass anticol");
+      |                                                                                         ^
+  CCLD     libnfcchips.la
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/chips'
+Making all in buses
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/buses'
+  CC       libnfcbuses_la-empty.lo
+  CC       libnfcbuses_la-spi.lo
+spi.c: In function 'spi_set_speed':
+spi.c:109:102: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  109 |   if (ret == -1)  log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "Error setting SPI speed.");
+      |                                                                                                      ^
+spi.c: In function 'spi_set_mode':
+spi.c:120:101: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  120 |   if (ret == -1)  log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "Error setting SPI mode.");
+      |                                                                                                     ^
+spi.c: In function 'spi_get_speed':
+spi.c:132:101: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  132 |   if (ret == -1) log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "Error reading SPI speed.");
+      |                                                                                                     ^
+  CC       libnfcbuses_la-uart.lo
+  CC       libnfcbuses_la-usbbus.lo
+  CC       libnfcbuses_la-i2c.lo
+  CCLD     libnfcbuses.la
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/buses'
+Making all in drivers
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/drivers'
+  CC       libnfcdrivers_la-acr122_usb.lo
+acr122_usb.c: In function 'acr122_usb_receive':
+acr122_usb.c:615:14: warning: variable 'status' set but not used [-Wunused-but-set-variable]
+  615 |   int error, status;
+      |              ^~~~~~
+  CC       libnfcdrivers_la-acr122s.lo
+  CC       libnfcdrivers_la-arygon.lo
+  CC       libnfcdrivers_la-pn53x_usb.lo
+  CC       libnfcdrivers_la-pn532_uart.lo
+pn532_uart.c: In function 'pn532_uart_open':
+pn532_uart.c:293:95: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  293 |     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_ERROR, "pn53x_check_communication error");
+      |                                                                                               ^
+  CC       libnfcdrivers_la-pn532_spi.lo
+  CC       libnfcdrivers_la-pn532_i2c.lo
+pn532_i2c.c: In function 'pn532_i2c_wait_rdyframe':
+pn532_i2c.c:485:57: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  485 |               "Wait for a READY frame has been aborted.");
+      |                                                         ^
+pn532_i2c.c:514:59: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  514 |                     "timeout reached with no READY frame.");
+      |                                                           ^
+pn532_i2c.c: In function 'pn532_i2c_receive':
+pn532_i2c.c:559:13: warning: unused variable 'errorCode' [-Wunused-variable]
+  559 |     uint8_t errorCode = frameBuf[5];
+      |             ^~~~~~~~~
+pn532_i2c.c:569:90: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  569 |       log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_ERROR, "Length checksum mismatch");
+      |                                                                                          ^
+  CCLD     libnfcdrivers.la
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/drivers'
+Making all in .
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc'
+  CC       libnfc_la-conf.lo
+  CC       libnfc_la-iso14443-subr.lo
+  CC       libnfc_la-mirror-subr.lo
+  CC       libnfc_la-nfc.lo
+nfc.c: In function 'nfc_register_driver':
+nfc.c:210:105: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  210 |     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "nfc_register_driver returning NFC_EINVARG");
+      |                                                                                                         ^
+nfc.c: In function 'nfc_device_validate_modulation':
+nfc.c:1306:118: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1306 |       log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "nfc_device_validate_modulation returning NFC_EINVARG");
+      |                                                                                                                      ^
+nfc.c:1310:114: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1310 |   log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "nfc_device_validate_modulation returning NFC_EINVARG");
+      |                                                                                                                  ^
+  CC       libnfc_la-nfc-device.lo
+  CC       libnfc_la-nfc-emulation.lo
+  CC       libnfc_la-nfc-internal.lo
+nfc-internal.c: In function 'connstring_decode':
+nfc-internal.c:231:55: warning: '%%' directive output may be truncated writing 1 byte into a region of size between 0 and 18 [-Wformat-truncation=]
+  231 |   snprintf(format, sizeof(format), "%%%i[^:]:%%%i[^:]:%%%i[^:]", n - 1, n - 1, n - 1);
+      |                                                       ^~
+nfc-internal.c:231:36: note: directive argument in the range [0, 2147483645]
+  231 |   snprintf(format, sizeof(format), "%%%i[^:]:%%%i[^:]:%%%i[^:]", n - 1, n - 1, n - 1);
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nfc-internal.c:231:3: note: 'snprintf' output between 21 and 48 bytes into a destination of size 32
+  231 |   snprintf(format, sizeof(format), "%%%i[^:]:%%%i[^:]:%%%i[^:]", n - 1, n - 1, n - 1);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  CC       libnfc_la-target-subr.lo
+  CC       libnfc_la-log.lo
+  CC       libnfc_la-log-internal.lo
+  CCLD     libnfc.la
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc'
+Making all in utils
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/utils'
+  CC       nfc-barcode.o
+  CC       nfc-utils.lo
+  CCLD     libnfcutils.la
+  CCLD     nfc-barcode
+  CC       nfc-emulate-forum-tag4.o
+  CCLD     nfc-emulate-forum-tag4
+  CC       nfc-jewel.o
+  CC       jewel.o
+  CCLD     nfc-jewel
+  CC       nfc-list.o
+  CCLD     nfc-list
+  CC       nfc-mfclassic.o
+  CC       mifare.o
+  CCLD     nfc-mfclassic
+  CC       nfc-mfultralight.o
+  CCLD     nfc-mfultralight
+  CC       nfc-read-forum-tag3.o
+  CCLD     nfc-read-forum-tag3
+  CC       nfc-relay-picc.o
+  CCLD     nfc-relay-picc
+  CC       nfc-scan-device.o
+  CCLD     nfc-scan-device
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/utils'
+Making all in examples
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/examples'
+Making all in pn53x-tamashell-scripts
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/examples/pn53x-tamashell-scripts'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/examples/pn53x-tamashell-scripts'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/examples'
+  CC       nfc-anticol.o
+  CCLD     nfc-anticol
+  CC       nfc-dep-initiator.o
+  CCLD     nfc-dep-initiator
+  CC       nfc-dep-target.o
+  CCLD     nfc-dep-target
+  CC       nfc-emulate-forum-tag2.o
+  CCLD     nfc-emulate-forum-tag2
+  CC       nfc-emulate-tag.o
+  CCLD     nfc-emulate-tag
+  CC       nfc-emulate-uid.o
+  CCLD     nfc-emulate-uid
+  CC       nfc-mfsetuid.o
+  CCLD     nfc-mfsetuid
+  CC       nfc-poll.o
+  CCLD     nfc-poll
+  CC       nfc-relay.o
+  CCLD     nfc-relay
+  CC       nfc-st25tb.o
+  CCLD     nfc-st25tb
+  CC       pn53x-diagnose.o
+  CCLD     pn53x-diagnose
+  CC       pn53x-sam.o
+  CCLD     pn53x-sam
+  CC       pn53x_tamashell-pn53x-tamashell.o
+  CCLD     pn53x-tamashell
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/examples'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/examples'
+Making all in include
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/include'
+Making all in nfc
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/include/nfc'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/include/nfc'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/include'
+make[3]: Nothing to be done for 'all-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/include'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/include'
+Making all in contrib
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib'
+Making all in devd
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/devd'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/devd'
+Making all in libnfc
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/libnfc'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/libnfc'
+Making all in linux
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/linux'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/linux'
+Making all in udev
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/udev'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/udev'
+Making all in win32
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+Making all in libnfc
+make[4]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+Making all in buses
+make[5]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc/buses'
+make[5]: Nothing to be done for 'all'.
+make[5]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc/buses'
+Making all in .
+make[5]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+make[5]: Nothing to be done for 'all-am'.
+make[5]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+make[4]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+Making all in sys
+make[4]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/sys'
+make[4]: Nothing to be done for 'all'.
+make[4]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/sys'
+Making all in .
+make[4]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+make[4]: Nothing to be done for 'all-am'.
+make[4]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib'
+make[3]: Nothing to be done for 'all-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib'
+Making all in cmake
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/cmake'
+Making all in modules
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/cmake/modules'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/cmake/modules'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/cmake'
+make[3]: Nothing to be done for 'all-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/cmake'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/cmake'
+Making all in test
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/test'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/test'
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc'
+make[2]: Nothing to be done for 'all-am'.
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc'
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$ sudo make install
+Making install in libnfc
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc'
+Making install in chips
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/chips'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/chips'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/chips'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/chips'
+Making install in buses
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/buses'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/buses'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/buses'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/buses'
+Making install in drivers
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/drivers'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc/drivers'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/drivers'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc/drivers'
+Making install in .
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/libnfc'
+ /usr/bin/mkdir -p '/usr/lib'
+ /bin/bash ../libtool   --mode=install /usr/bin/install -c   libnfc.la '/usr/lib'
+libtool: install: /usr/bin/install -c .libs/libnfc.so.6.0.0 /usr/lib/libnfc.so.6.0.0
+libtool: install: (cd /usr/lib && { ln -s -f libnfc.so.6.0.0 libnfc.so.6 || { rm -f libnfc.so.6 && ln -s libnfc.so.6.0.0 libnfc.so.6; }; })
+libtool: install: (cd /usr/lib && { ln -s -f libnfc.so.6.0.0 libnfc.so || { rm -f libnfc.so && ln -s libnfc.so.6.0.0 libnfc.so; }; })
+libtool: install: /usr/bin/install -c .libs/libnfc.lai /usr/lib/libnfc.la
+libtool: install: /usr/bin/install -c .libs/libnfc.a /usr/lib/libnfc.a
+libtool: install: chmod 644 /usr/lib/libnfc.a
+libtool: install: arm-linux-gnueabihf-ranlib /usr/lib/libnfc.a
+libtool: finish: PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/sbin" ldconfig -n /usr/lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /usr/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc/libnfc'
+Making install in utils
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc/utils'
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/utils'
+ /usr/bin/mkdir -p '/usr/bin'
+  /bin/bash ../libtool   --mode=install /usr/bin/install -c nfc-barcode nfc-emulate-forum-tag4 nfc-jewel nfc-list nfc-mfclassic nfc-mfultralight nfc-read-forum-tag3 nfc-relay-picc nfc-scan-device '/usr/bin'
+libtool: install: /usr/bin/install -c .libs/nfc-barcode /usr/bin/nfc-barcode
+libtool: install: /usr/bin/install -c .libs/nfc-emulate-forum-tag4 /usr/bin/nfc-emulate-forum-tag4
+libtool: install: /usr/bin/install -c .libs/nfc-jewel /usr/bin/nfc-jewel
+libtool: install: /usr/bin/install -c .libs/nfc-list /usr/bin/nfc-list
+libtool: install: /usr/bin/install -c .libs/nfc-mfclassic /usr/bin/nfc-mfclassic
+libtool: install: /usr/bin/install -c .libs/nfc-mfultralight /usr/bin/nfc-mfultralight
+libtool: install: /usr/bin/install -c .libs/nfc-read-forum-tag3 /usr/bin/nfc-read-forum-tag3
+libtool: install: /usr/bin/install -c .libs/nfc-relay-picc /usr/bin/nfc-relay-picc
+libtool: install: /usr/bin/install -c .libs/nfc-scan-device /usr/bin/nfc-scan-device
+ /usr/bin/mkdir -p '/usr/share/man/man1'
+ /usr/bin/install -c -m 644 nfc-barcode.1 nfc-emulate-forum-tag4.1 nfc-jewel.1 nfc-list.1 nfc-mfclassic.1 nfc-mfultralight.1 nfc-read-forum-tag3.1 nfc-relay-picc.1 nfc-scan-device.1 '/usr/share/man/man1'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/utils'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc/utils'
+Making install in examples
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc/examples'
+Making install in pn53x-tamashell-scripts
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/examples/pn53x-tamashell-scripts'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/examples/pn53x-tamashell-scripts'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/examples/pn53x-tamashell-scripts'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/examples/pn53x-tamashell-scripts'
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/examples'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/examples'
+ /usr/bin/mkdir -p '/usr/bin'
+  /bin/bash ../libtool   --mode=install /usr/bin/install -c nfc-anticol nfc-dep-initiator nfc-dep-target nfc-emulate-forum-tag2 nfc-emulate-tag nfc-emulate-uid nfc-mfsetuid nfc-poll nfc-relay nfc-st25tb pn53x-diagnose pn53x-sam pn53x-tamashell '/usr/bin'
+libtool: install: /usr/bin/install -c .libs/nfc-anticol /usr/bin/nfc-anticol
+libtool: install: /usr/bin/install -c .libs/nfc-dep-initiator /usr/bin/nfc-dep-initiator
+libtool: install: /usr/bin/install -c .libs/nfc-dep-target /usr/bin/nfc-dep-target
+libtool: install: /usr/bin/install -c .libs/nfc-emulate-forum-tag2 /usr/bin/nfc-emulate-forum-tag2
+libtool: install: /usr/bin/install -c .libs/nfc-emulate-tag /usr/bin/nfc-emulate-tag
+libtool: install: /usr/bin/install -c .libs/nfc-emulate-uid /usr/bin/nfc-emulate-uid
+libtool: install: /usr/bin/install -c .libs/nfc-mfsetuid /usr/bin/nfc-mfsetuid
+libtool: install: /usr/bin/install -c .libs/nfc-poll /usr/bin/nfc-poll
+libtool: install: /usr/bin/install -c .libs/nfc-relay /usr/bin/nfc-relay
+libtool: install: /usr/bin/install -c .libs/nfc-st25tb /usr/bin/nfc-st25tb
+libtool: install: /usr/bin/install -c .libs/pn53x-diagnose /usr/bin/pn53x-diagnose
+libtool: install: /usr/bin/install -c .libs/pn53x-sam /usr/bin/pn53x-sam
+libtool: install: /usr/bin/install -c .libs/pn53x-tamashell /usr/bin/pn53x-tamashell
+ /usr/bin/mkdir -p '/usr/share/man/man1'
+ /usr/bin/install -c -m 644 nfc-anticol.1 nfc-dep-initiator.1 nfc-dep-target.1 nfc-emulate-tag.1 nfc-emulate-uid.1 nfc-poll.1 nfc-relay.1 nfc-mfsetuid.1 pn53x-diagnose.1 pn53x-sam.1 pn53x-tamashell.1 nfc-emulate-forum-tag2.1 '/usr/share/man/man1'
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/examples'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/examples'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc/examples'
+Making install in include
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc/include'
+Making install in nfc
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/include/nfc'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/include/nfc'
+make[3]: Nothing to be done for 'install-exec-am'.
+ /usr/bin/mkdir -p '/usr/include/nfc'
+ /usr/bin/install -c -m 644 nfc.h nfc-emulation.h nfc-types.h '/usr/include/nfc'
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/include/nfc'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/include/nfc'
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/include'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/include'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/include'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/include'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc/include'
+Making install in contrib
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib'
+Making install in devd
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/devd'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/devd'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/devd'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/devd'
+Making install in libnfc
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/libnfc'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/libnfc'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/libnfc'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/libnfc'
+Making install in linux
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/linux'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/linux'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/linux'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/linux'
+Making install in udev
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/udev'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/udev'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/udev'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/udev'
+Making install in win32
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+Making install in libnfc
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+Making install in buses
+make[4]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc/buses'
+make[5]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc/buses'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc/buses'
+make[4]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc/buses'
+Making install in .
+make[4]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+make[5]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+make[4]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/libnfc'
+Making install in sys
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/sys'
+make[4]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32/sys'
+make[4]: Nothing to be done for 'install-exec-am'.
+make[4]: Nothing to be done for 'install-data-am'.
+make[4]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/sys'
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32/sys'
+Making install in .
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+make[4]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+make[4]: Nothing to be done for 'install-exec-am'.
+make[4]: Nothing to be done for 'install-data-am'.
+make[4]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib/win32'
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/contrib'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc/contrib'
+Making install in cmake
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc/cmake'
+Making install in modules
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/cmake/modules'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/cmake/modules'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/cmake/modules'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/cmake/modules'
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/cmake'
+make[3]: Entering directory '/home/parallels/libnfc-build/libnfc/cmake'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/parallels/libnfc-build/libnfc/cmake'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/cmake'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc/cmake'
+Making install in test
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc/test'
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc/test'
+make[2]: Nothing to be done for 'install-exec-am'.
+make[2]: Nothing to be done for 'install-data-am'.
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc/test'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc/test'
+make[1]: Entering directory '/home/parallels/libnfc-build/libnfc'
+make[2]: Entering directory '/home/parallels/libnfc-build/libnfc'
+make[2]: Nothing to be done for 'install-exec-am'.
+ /usr/bin/mkdir -p '/usr/lib/pkgconfig'
+ /usr/bin/install -c -m 644 libnfc.pc '/usr/lib/pkgconfig'
+make[2]: Leaving directory '/home/parallels/libnfc-build/libnfc'
+make[1]: Leaving directory '/home/parallels/libnfc-build/libnfc'
+parallels@debian-gnu-linux-12:~/libnfc-build/libnfc$
+
