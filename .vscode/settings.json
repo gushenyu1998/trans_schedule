@@ -1,6 +1,7 @@
 {
     "cmake.sourceDirectory": "/home/sgu/cmpt433/work/trans_schedule/API_Parsing",
     "files.associations": {
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "json.h": "c"
     }
 }
