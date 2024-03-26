@@ -5,40 +5,27 @@
 #include <json-c/json.h>
 #include <stdbool.h>
 
-struct json_object *parsed_json;
-struct json_object *route;
-struct json_object *route_no;
-struct json_object *route_name;
-struct json_object *direction;
-struct json_object *schedules;
-struct json_object *route_schedule;
-
-struct json_object *expected_leave_time;
-struct json_object *expected_count_down;
-struct json_object *destination;
-struct json_object *cancelled_trip;
-struct json_object *cancelled_Stop;
-
-
 struct MemoryStruct
 {
     char *memory;
     size_t size;
 };
 
-typedef struct scheduleStruct {
-    char * Destination;
-    char * ExpectedLeaveTime;
-    char * ExpectedCountdown;
+typedef struct scheduleStruct
+{
+    const char *Destination;
+    const char *ExpectedLeaveTime;
+    const char *ExpectedCountdown;
     bool CancelledTrip;
     bool CancelledStop;
-}scheduleStruct;
+} scheduleStruct;
 
-typedef struct transStruct {
-    char * RouteNo;
-    char * RouteName;
-    struct scheduleStruct * schedule;
-}transStruct;
+typedef struct transStruct
+{
+    const char *RouteNo;
+    const char *RouteName;
+    scheduleStruct *schedule;
+} transStruct;
 
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -60,7 +47,21 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
     return realsize;
 }
 
-struct transStruct* ReadFromTransAPI(int *size, char * APIquery){
+struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
+{
+    struct json_object *parsed_json;
+    struct json_object *route;
+    struct json_object *route_no;
+    struct json_object *route_name;
+    struct json_object *schedules;
+
+    struct json_object *route_schedule;
+    struct json_object *expected_leave_time;
+    struct json_object *expected_count_down;
+    struct json_object *destination;
+    struct json_object *cancelled_trip;
+    struct json_object *cancelled_Stop;
+
     CURL *curl;
     CURLcode res;
     struct MemoryStruct chunk;
@@ -68,8 +69,9 @@ struct transStruct* ReadFromTransAPI(int *size, char * APIquery){
     chunk.size = 0;
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
+    transStruct *busSchedule = NULL;
     if (curl)
-    {   
+    {
         curl_easy_setopt(curl, CURLOPT_URL, APIquery);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
@@ -82,7 +84,6 @@ struct transStruct* ReadFromTransAPI(int *size, char * APIquery){
         }
         else
         {
-            transStruct *busSchedule;
             printf("%lu bytes retrieved\n", (unsigned long)chunk.size);
             parsed_json = json_tokener_parse(chunk.memory);
             size_t json_size = 0;
@@ -90,8 +91,8 @@ struct transStruct* ReadFromTransAPI(int *size, char * APIquery){
             {
                 // Get the size of the top-level JSON array
                 json_size = json_object_array_length(parsed_json);
-                *size  = json_size;
-                busSchedule = malloc(sizeof(transStruct)*json_size);
+                *size = json_size;
+                busSchedule = malloc(sizeof(transStruct) * json_size);
             }
             else
             {
@@ -103,27 +104,42 @@ struct transStruct* ReadFromTransAPI(int *size, char * APIquery){
                 route = json_object_array_get_idx(parsed_json, i);
                 json_object_object_get_ex(route, "RouteNo", &route_no);
                 json_object_object_get_ex(route, "RouteName", &route_name);
-                json_object_object_get_ex(route, "Direction", &direction);
                 json_object_object_get_ex(route, "Schedules", &schedules);
                 busSchedule[i].RouteNo = json_object_get_string(route_no);
                 busSchedule[i].RouteName = json_object_get_string(route_name);
-                
-                
-                route_schedule = json_object_array_get_idx(schedules, 0);
-                size_t schedule_size = json_object_array_length(route_schedule);
-                json_object_object_get_ex(route_schedule, "ExpectedLeaveTime", &expected_leave_time);
-                printf("Route:\n");
-                printf("Route No: %s\n", json_object_get_string(route_no));
-                printf("Route Name: %s\n", json_object_get_string(route_name));
-                printf("Direction: %s\n", json_object_get_string(direction));
-                printf("First Schedule's Expected Leave Time: %s\n", json_object_get_string(expected_leave_time));
+                size_t schedule_size = json_object_array_length(schedules);
+
+                busSchedule[i].schedule = malloc(sizeof(scheduleStruct) * schedule_size);
+                for (size_t j = 0; j < schedule_size; j++)
+                {
+
+                    route_schedule = json_object_array_get_idx(schedules, j);
+                    json_object_object_get_ex(route_schedule, "Destination", &destination);
+                    json_object_object_get_ex(route_schedule, "ExpectedLeaveTime", &expected_leave_time);
+                    json_object_object_get_ex(route_schedule, "ExpectedCountdown", &expected_count_down);
+                    json_object_object_get_ex(route_schedule, "CancelledTrip", &cancelled_trip);
+                    json_object_object_get_ex(route_schedule, "CancelledStop", &cancelled_Stop);
+                    busSchedule[i].schedule[j].Destination = json_object_get_string(destination);
+                    busSchedule[i].schedule[j].ExpectedLeaveTime = json_object_get_string(expected_leave_time);
+                    busSchedule[i].schedule[j].ExpectedCountdown = json_object_get_string(expected_count_down);
+                    busSchedule[i].schedule[j].CancelledStop =  json_object_get_boolean(cancelled_Stop);
+                    busSchedule[i].schedule[j].CancelledTrip =  json_object_get_boolean(cancelled_trip);
+                }
             }
         }
         curl_easy_cleanup(curl);
         free(chunk.memory);
     }
     curl_global_cleanup();
-    return NULL;
+    return busSchedule;
+}
+
+void freeTransStruct(int size, transStruct* trans_info){
+    for (size_t i = 0; i < size-1; i++)
+    {
+        free(trans_info[i].schedule);
+    }
+    free(trans_info);
 }
 
 int main(void)
@@ -131,6 +147,7 @@ int main(void)
     int size;
     char *calling = "https://api.translink.ca/rttiapi/v1/stops/60980/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=2";
     int count = 2;
-    ReadFromTransAPI(&size, calling);
+    transStruct *a =  ReadFromTransAPI(&size, calling);
+    freeTransStruct(size,a);
     return 1;
 }
