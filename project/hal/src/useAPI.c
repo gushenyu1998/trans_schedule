@@ -1,31 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <curl/curl.h>
-#include <json-c/json.h>
-#include <stdbool.h>
-
+#include "hal/useAPI.h"
 struct MemoryStruct
 {
     char *memory;
     size_t size;
 };
-
-typedef struct scheduleStruct
-{
-    const char *Destination;
-    const char *ExpectedLeaveTime;
-    const char *ExpectedCountdown;
-    bool CancelledTrip;
-    bool CancelledStop;
-} scheduleStruct;
-
-typedef struct transStruct
-{
-    const char *RouteNo;
-    const char *RouteName;
-    scheduleStruct *schedule;
-} transStruct;
 
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -70,6 +48,8 @@ struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
     transStruct *busSchedule = NULL;
+    memset(scheduleBuffer, 0, sizeof(char *) * buffer_size); // clean up the buffer
+    schduleBufferSize = 0;
     if (curl)
     {
         curl_easy_setopt(curl, CURLOPT_URL, APIquery);
@@ -108,7 +88,6 @@ struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
                 busSchedule[i].RouteNo = json_object_get_string(route_no);
                 busSchedule[i].RouteName = json_object_get_string(route_name);
                 size_t schedule_size = json_object_array_length(schedules);
-
                 busSchedule[i].schedule = malloc(sizeof(scheduleStruct) * schedule_size);
                 for (size_t j = 0; j < schedule_size; j++)
                 {
@@ -122,8 +101,13 @@ struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
                     busSchedule[i].schedule[j].Destination = json_object_get_string(destination);
                     busSchedule[i].schedule[j].ExpectedLeaveTime = json_object_get_string(expected_leave_time);
                     busSchedule[i].schedule[j].ExpectedCountdown = json_object_get_string(expected_count_down);
-                    busSchedule[i].schedule[j].CancelledStop =  json_object_get_boolean(cancelled_Stop);
-                    busSchedule[i].schedule[j].CancelledTrip =  json_object_get_boolean(cancelled_trip);
+                    busSchedule[i].schedule[j].CancelledStop = json_object_get_boolean(cancelled_Stop);
+                    busSchedule[i].schedule[j].CancelledTrip = json_object_get_boolean(cancelled_trip);
+                    if (!busSchedule[i].schedule[j].CancelledStop && busSchedule[i].schedule[j].CancelledTrip) //if the schedule or the stop is not cancelled, then add 
+                    {
+                        char *schedule = malloc(sizeof(char) * buffer_size);
+                        sprintf("%s %s %s, %smins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedLeaveTime, busSchedule[i].schedule[j].ExpectedCountdown);
+                    }
                 }
             }
         }
@@ -134,20 +118,39 @@ struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
     return busSchedule;
 }
 
-void freeTransStruct(int size, transStruct* trans_info){
-    for (size_t i = 0; i < size-1; i++)
+void freeTransStruct(int size, transStruct *trans_info)
+{
+    for (int i = 0; i < size - 1; i++)
     {
         free(trans_info[i].schedule);
     }
     free(trans_info);
 }
 
-int main(void)
-{
-    int size;
-    char *calling = "https://api.translink.ca/rttiapi/v1/stops/55713/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=2";
-    int count = 2;
-    transStruct *a =  ReadFromTransAPI(&size, calling);
-    freeTransStruct(size,a);
-    return 1;
+void freeScheduleBuffer(int size, char ** buffer){
+    for (int i = 0; i < size ; i++)
+    {
+        free(buffer[i]);
+    }
 }
+
+void UpdateSchedule(char * API_query){
+    freeTransStruct(busStructSize, busStruct);
+    freeScheduleBuffer(schduleBufferSize, scheduleBuffer);
+    busStruct = ReadFromTransAPI(busStructSize, API_query);
+    for (int i = 0; i < schduleBufferSize; i++)
+    {
+        if(i > max_display) break;
+        printf(scheduleBuffer[i]); //replace this line to the displaying
+    }
+}
+
+// int main(void)
+// {
+//     int size;
+//     char *calling = "https://api.translink.ca/rttiapi/v1/stops/55713/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=2";
+//     int count = 2;
+//     transStruct *a =  ReadFromTransAPI(&size, calling);
+//     freeTransStruct(size,a);
+//     return 1;
+// }
