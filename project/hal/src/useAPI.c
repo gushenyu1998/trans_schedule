@@ -25,7 +25,7 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
     return realsize;
 }
 
-struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
+struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
 {
     struct json_object *parsed_json;
     struct json_object *route;
@@ -47,7 +47,7 @@ struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
     chunk.size = 0;
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
-    transStruct *busSchedule = NULL;
+    transStruct_t *busSchedule = NULL; //create new structure to store the bus schdule
     memset(scheduleBuffer, 0, sizeof(char *) * buffer_size); // clean up the buffer
     schduleBufferSize = 0;
     if (curl)
@@ -72,7 +72,7 @@ struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
                 // Get the size of the top-level JSON array
                 json_size = json_object_array_length(parsed_json);
                 *size = json_size;
-                busSchedule = malloc(sizeof(transStruct) * json_size);
+                busSchedule = malloc(sizeof(transStruct_t) * json_size);
             }
             else
             {
@@ -103,10 +103,12 @@ struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
                     busSchedule[i].schedule[j].ExpectedCountdown = json_object_get_string(expected_count_down);
                     busSchedule[i].schedule[j].CancelledStop = json_object_get_boolean(cancelled_Stop);
                     busSchedule[i].schedule[j].CancelledTrip = json_object_get_boolean(cancelled_trip);
-                    if (!busSchedule[i].schedule[j].CancelledStop && busSchedule[i].schedule[j].CancelledTrip) //if the schedule or the stop is not cancelled, then add 
+                    if (!busSchedule[i].schedule[j].CancelledStop && busSchedule[i].schedule[j].CancelledTrip) //if the schedule or the stop is not cancelled, then add the size of buffer
                     {
                         char *schedule = malloc(sizeof(char) * buffer_size);
                         sprintf("%s %s %s, %smins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedLeaveTime, busSchedule[i].schedule[j].ExpectedCountdown);
+                        scheduleBuffer[schduleBufferSize] = schedule;
+                        schduleBufferSize++;
                     }
                 }
             }
@@ -118,7 +120,7 @@ struct transStruct *ReadFromTransAPI(int *size, char *APIquery)
     return busSchedule;
 }
 
-void freeTransStruct(int size, transStruct *trans_info)
+void freeTransStruct(int size, transStruct_t *trans_info)
 {
     for (int i = 0; i < size - 1; i++)
     {
@@ -134,6 +136,7 @@ void freeScheduleBuffer(int size, char ** buffer){
     }
 }
 
+//this function should call every minutes 
 void UpdateSchedule(char * API_query){
     freeTransStruct(busStructSize, busStruct);
     freeScheduleBuffer(schduleBufferSize, scheduleBuffer);
@@ -143,14 +146,15 @@ void UpdateSchedule(char * API_query){
         if(i > max_display) break;
         printf(scheduleBuffer[i]); //replace this line to the displaying
     }
+
+    // search the recall schedule here and play the sound
 }
 
-// int main(void)
-// {
-//     int size;
-//     char *calling = "https://api.translink.ca/rttiapi/v1/stops/55713/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=2";
-//     int count = 2;
-//     transStruct *a =  ReadFromTransAPI(&size, calling);
-//     freeTransStruct(size,a);
-//     return 1;
-// }
+//play the sound of bus schdule
+void playBusSchdule(){
+    for (int i = 0; i < schduleBufferSize; i++)
+    {
+        if(i > max_display) break;
+        // play the sound at here
+    }
+}

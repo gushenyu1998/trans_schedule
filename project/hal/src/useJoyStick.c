@@ -111,7 +111,7 @@ char waitForGpioEdge(char **fileNamesForGpioValue, int *waitMilliseconds, int nu
 
 void *useJoystick()
 {
-    
+
     char *listOfDetection[] = {
         JOYSTICK_IN_PRESS,
         JOYSTICK_IN_UP,
@@ -146,4 +146,36 @@ void *useJoystick()
     }
     printf("JoyStick Shutdown\n");
     return NULL;
+}
+
+// function for switch mode to user selection
+void selectScheduleRecall()
+{
+    int busIndex;
+    int scheduleIndex;
+    int timeOfWait;
+
+    char *listOfDetection[] = {
+        JOYSTICK_IN_PRESS,
+        JOYSTICK_IN_UP,
+        JOYSTICK_IN_DOWN,
+        JOYSTICK_IN_LEFT,
+        JOYSTICK_IN_RIGHT,
+    };
+    int waitTimes[] = {10000, 10000, 10000, 10000, 10000}; // wait operation for 10s, if no responce in 10s then return
+
+    while (true)
+    {
+        // goes around the first level to select the route number
+    }
+
+    while (true)
+    {
+        // goes around the seconds level and select the bus schedule
+    }
+
+    while (true)
+    {
+        // select the time to notice in advance
+    }
 }
