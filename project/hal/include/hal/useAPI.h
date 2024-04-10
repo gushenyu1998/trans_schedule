@@ -10,7 +10,6 @@
 #include <time.h>
 
 #define buffer_size 100
-#define max_display 3
 
 typedef struct scheduleStruct
 {
@@ -33,6 +32,8 @@ typedef struct recallSchedule_t
     time_t schedule_time;
     char * sentence;
 }recallSchedule_t;
+
+static int max_display = 3;
 
 
 //the data sturcture for storing the bus schedule

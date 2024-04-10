@@ -45,6 +45,6 @@
 void inititalize_JoyStick();
 
 // Thread function of using the joy stick with Epoll
-void *useJoystick();
+void selectScheduleRecall(char *name);
 
 #endif

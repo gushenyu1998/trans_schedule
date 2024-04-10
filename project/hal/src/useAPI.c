@@ -140,7 +140,7 @@ void freeScheduleBuffer(int size, char ** buffer){
 void UpdateSchedule(char * API_query){
     freeTransStruct(busStructSize, busStruct);
     freeScheduleBuffer(schduleBufferSize, scheduleBuffer);
-    busStruct = ReadFromTransAPI(busStructSize, API_query);
+    busStruct = ReadFromTransAPI(&busStructSize, API_query);
     for (int i = 0; i < schduleBufferSize; i++)
     {
         if(i > max_display) break;
@@ -158,3 +158,4 @@ void playBusSchdule(){
         // play the sound at here
     }
 }
+

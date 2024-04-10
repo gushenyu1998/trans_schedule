@@ -1,5 +1,5 @@
 #include "hal/useJoyStick.h"
-
+#include "hal/useAPI.h"
 void inititalize_JoyStick()
 {
     char gpioCommand[1024];
@@ -109,51 +109,12 @@ char waitForGpioEdge(char **fileNamesForGpioValue, int *waitMilliseconds, int nu
     return triggered;
 }
 
-void *useJoystick()
-{
-
-    char *listOfDetection[] = {
-        JOYSTICK_IN_PRESS,
-        JOYSTICK_IN_UP,
-        JOYSTICK_IN_DOWN,
-        JOYSTICK_IN_LEFT,
-        JOYSTICK_IN_RIGHT,
-    };
-    int waitTimes[] = {-1, -1, -1, -1, -1};
-    waitForGpioEdge(listOfDetection, waitTimes, 5);
-    while (!ifShutdown())
-    {
-        // if ((triggeredGpios >> 1) & 1) // fire, judge and count down
-        // {
-        //     if (shootTarget())
-        //     {
-        //         hit_number++;
-        //         setNumber(hit_number);
-        //         PWM_buzz_hit();
-        //         generateNewTarget();
-        //     }
-        //     else
-        //     {
-        //         PWM_buzz_miss();
-        //     }
-        // }
-        // if ((triggeredGpios >> 3) & 1)
-        // {
-        //     signalShutdown();
-        //     break;
-        // }
-        waitForGpioEdge(listOfDetection, waitTimes, 5);
-    }
-    printf("JoyStick Shutdown\n");
-    return NULL;
-}
-
 // function for switch mode to user selection
-void selectScheduleRecall()
+void selectScheduleRecall(char *name)
 {
-    int busIndex;
-    int scheduleIndex;
-    int timeOfWait;
+    int busIndex = 0;
+    int scheduleIndex = 0;
+    int timeOfWait = 5;
 
     char *listOfDetection[] = {
         JOYSTICK_IN_PRESS,
@@ -166,16 +127,119 @@ void selectScheduleRecall()
 
     while (true)
     {
-        // goes around the first level to select the route number
+        // modify it to display
+        printf("Which Route you want to wait? %s\n", busStruct[busIndex].RouteNo);
+        char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
+        // user input up
+        if (userInput & (1 << 1) != 0)
+        {
+            busIndex--;
+            if (busIndex < 0)
+                busIndex = busStructSize - 1;
+        }
+
+        // user input down
+        if (userInput & (1 << 2) != 0)
+        {
+            busIndex = (busIndex + 1) % busStructSize;
+        }
+
+        // user input press
+        if (userInput & 1 != 0)
+        {
+            break;
+        }
+
+        if (userInput == 0)
+            return;
     }
 
     while (true)
     {
         // goes around the seconds level and select the bus schedule
+        printf("Which time do you want to pick up? %s\n", busStruct[busIndex].schedule[scheduleIndex].ExpectedLeaveTime);
+        char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
+        // user input up
+        if (userInput & (1 << 1) != 0)
+        {
+            scheduleIndex--;
+            if (scheduleIndex < 0)
+                scheduleIndex = max_display - 1;
+        }
+
+        // user input down
+        if (userInput & (1 << 2) != 0)
+        {
+            scheduleIndex = (scheduleIndex + 1) % max_display;
+        }
+
+        // user input press
+        if (userInput & 1 != 0)
+        {
+            break;
+        }
+
+        if (userInput == 0)
+            return;
     }
 
     while (true)
     {
+        // goes around the seconds level and select the bus schedule
+        printf("How much time you want to notice in advance? %s mins\n", timeOfWait);
+        char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
+        // user input up
+        if (userInput & (1 << 1) != 0)
+        {
+            timeOfWait--;
+            if (timeOfWait < 0)
+                timeOfWait = timeOfWait - 1;
+        }
+
+        // user input down
+        if (userInput & (1 << 2) != 0)
+        {
+           timeOfWait = (timeOfWait + 1) % 15;
+        }
+
+        // user input press
+        if (userInput & 1 != 0)
+        {
+            break;
+        }
+
+        if (userInput == 0)
+            return;
         // select the time to notice in advance
+    }
+
+    // load the schedule of recall from here
+    for (size_t i = 0; i < buffer_size; i++)
+    {
+        bool flag = false;
+        //find a block of the buff is NULL
+        if (recallSchedule[i].sentence == NULL)
+        {
+            // prepare the sentence of 
+            char * recall = malloc(sizeof(char)*100);
+            sprintf(recall, "%s, route %s will come in %d minutes", name, busStruct[busIndex].RouteNo, timeOfWait);  
+
+            //load the time to the time_t based on the Expected count down
+            int expected_countdown;
+            sscanf(busStruct[busIndex].schedule[scheduleIndex].ExpectedCountdown, "%d", &expected_countdown);
+            expected_countdown *=60;
+            time_t scheduledTime;
+            time(&scheduledTime);
+            scheduledTime += expected_countdown;
+
+            //load the data to the sturcture
+            recallSchedule[i].schedule_time = scheduledTime;
+            recallSchedule[i].sentence = recall;
+            flag = true;
+        }
+        if (!flag)
+        {
+            printf("Buffer is full\n"); // replace it to displaying
+        }
     }
 }
