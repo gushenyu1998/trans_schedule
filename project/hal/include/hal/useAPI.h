@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define buffer_size 100
+#define BUFFER_SIZE 100
 
 typedef struct scheduleStruct
 {
@@ -37,13 +37,13 @@ static int max_display = 3;
 
 
 //the data sturcture for storing the bus schedule
-char* scheduleBuffer[buffer_size];
+char* scheduleBuffer[BUFFER_SIZE];
 int schduleBufferSize = 0;
 transStruct_t * busStruct;
 int busStructSize = 0;
 
 //the data stucture store the recall, set the buffer size up to 100
-recallSchedule_t recallSchedule[buffer_size];
+recallSchedule_t recallSchedule[BUFFER_SIZE];
 
 
 //this function will call the API and update the schdule, need to be call once per minutes

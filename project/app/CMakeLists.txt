@@ -17,6 +17,17 @@ include_directories(${JSON-C_INCLUDE_DIRS})
 # Make use of the HAL library
 target_link_libraries(Project LINK_PRIVATE hal m ${CURL_LIBRARIES} ${JSON-C_LIBRARIES})
 
+target_link_libraries(Project PRIVATE ${CURL_LIBRARIES} ${JSON-C_LIBRARIES})
+
+# Use libnfc and Flite include directories
+target_include_directories(Project PRIVATE ${LIBNFC_INCLUDE_DIRS} ${FLITE_INCLUDE_DIRS})
+
+# Link libnfc and Flite libraries
+target_link_libraries(Project PRIVATE ${LIBNFC_LIBRARIES} ${FLITE_LIBRARIES} flite_usenglish flite_cmu_us_kal flite_cmulex flite m)
+
+# Specify library link directories (if needed)
+target_link_directories(Project PRIVATE ${LIBNFC_LIBRARY_DIRS} ${FLITE_LIBRARY_DIRS})
+
 
 add_custom_command(TARGET Project POST_BUILD 
   COMMAND "${CMAKE_COMMAND}" -E copy 

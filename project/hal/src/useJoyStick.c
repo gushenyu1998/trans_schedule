@@ -1,5 +1,6 @@
 #include "hal/useJoyStick.h"
 #include "hal/useAPI.h"
+
 void inititalize_JoyStick()
 {
     char gpioCommand[1024];
@@ -214,7 +215,7 @@ void selectScheduleRecall(char *name)
     }
 
     // load the schedule of recall from here
-    for (size_t i = 0; i < buffer_size; i++)
+    for (size_t i = 0; i < BUFFER_SIZE; i++)
     {
         bool flag = false;
         //find a block of the buff is NULL

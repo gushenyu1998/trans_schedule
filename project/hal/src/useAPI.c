@@ -48,7 +48,7 @@ struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
     transStruct_t *busSchedule = NULL; //create new structure to store the bus schdule
-    memset(scheduleBuffer, 0, sizeof(char *) * buffer_size); // clean up the buffer
+    memset(scheduleBuffer, 0, sizeof(char *) * BUFFER_SIZE); // clean up the buffer
     schduleBufferSize = 0;
     if (curl)
     {
@@ -105,7 +105,7 @@ struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
                     busSchedule[i].schedule[j].CancelledTrip = json_object_get_boolean(cancelled_trip);
                     if (!busSchedule[i].schedule[j].CancelledStop && busSchedule[i].schedule[j].CancelledTrip) //if the schedule or the stop is not cancelled, then add the size of buffer
                     {
-                        char *schedule = malloc(sizeof(char) * buffer_size);
+                        char *schedule = malloc(sizeof(char) * BUFFER_SIZE);
                         sprintf("%s %s %s, %smins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedLeaveTime, busSchedule[i].schedule[j].ExpectedCountdown);
                         scheduleBuffer[schduleBufferSize] = schedule;
                         schduleBufferSize++;
