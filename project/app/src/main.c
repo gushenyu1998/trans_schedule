@@ -1,4 +1,6 @@
 #include "main.h"
+#include "hal/useNFC.h"
+#include "hal/useTTS.h"
 #include <flite/flite.h>
 #include <alsa/asoundlib.h>
 
@@ -22,10 +24,10 @@ int main(void)
 
     init_nfc();
 
-    char inputString2[] = "Jerry";
+    char inputString2[] = "Tommy";
     writeToNFC(inputString2, 1);
 
-    char inputString[] = "Zhang";
+    char inputString[] = "Santa";
     writeToNFC(inputString, 2);
 
     for (int i=1; i<=2; i++){
@@ -33,7 +35,7 @@ int main(void)
         printf("Name: %s\n", output);
         free(output);
     }
-    
+
 	return 1;
 }
 
