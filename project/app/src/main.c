@@ -22,12 +22,18 @@ int main(void)
 
     init_nfc();
 
-    char inputString[] = "Tommy";
-    writeToNFC(inputString);
-    char* output = readNFC();
-    printf("Name: %s\n", output);
+    char inputString2[] = "Jerry";
+    writeToNFC(inputString2, 1);
 
+    char inputString[] = "Zhang";
+    writeToNFC(inputString, 2);
 
+    for (int i=1; i<=2; i++){
+        char* output = readNFC(i);
+        printf("Name: %s\n", output);
+        free(output);
+    }
+    
 	return 1;
 }
 

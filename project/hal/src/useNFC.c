@@ -13,7 +13,8 @@
 #include <nfc/nfc-types.h>
 #include "hal/readNWrite.h"
 
-uint8_t keyA[6] = {0xD3, 0xF7, 0xD3, 0xF7, 0xD3, 0xF7};
+// uint8_t keyA[6] = {0xD3, 0xF7, 0xD3, 0xF7, 0xD3, 0xF7}; // CARD
+uint8_t keyA[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; // FOB
 uint8_t keyB[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 static bool authenticate_sector(nfc_device* pnd, uint8_t block, uint8_t* key, bool useKeyA, nfc_target nt) {
@@ -64,7 +65,7 @@ static void hexToAlphabeticalString(uint8_t *hexData, char *output, size_t dataS
     output[dataSize] = '\0'; // Null-terminate the string
 }
 
-void writeToNFC(char* inputString){
+void writeToNFC(char* inputString, uint8_t sector){
     nfc_device *pnd;
     nfc_target nt;
     nfc_context *context;
@@ -76,18 +77,16 @@ void writeToNFC(char* inputString){
     };
     int res;
     uint8_t blockData[16];
-    uint8_t sector = 1;
+//    uint8_t sector = 1;
     uint8_t block = sector * 4;
     if ((res = nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt)) <= 0) {
         printf("Waiting for card...\n");
     }
     while ((res = nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt)) <= 0) {
     }
-    printf("\033[A");
-    printf("\033[K");
+//    printf("\033[A");
+//    printf("\033[K");
     if (authenticate_sector(pnd, block, keyA, true, nt)) {
-        read_block(pnd, block, blockData);
-//        char inputString[] = "John";
         uint8_t data[16] = {0};
         stringToUint8Array(inputString, data, sizeof(data));
         write_block(pnd, block, data);
@@ -98,7 +97,7 @@ void writeToNFC(char* inputString){
     nfc_exit(context);
 }
 
-char* readNFC(void){
+char* readNFC(uint8_t sector){
     nfc_device *pnd;
     nfc_target nt;
     nfc_context *context;
@@ -111,15 +110,15 @@ char* readNFC(void){
 
     int res;
     uint8_t blockData[16];
-    uint8_t sector = 1;
+//    uint8_t sector = 1;
     uint8_t block = sector * 4;
     if ((res = nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt)) <= 0) {
         printf("Waiting for card...\n");
     }
     while ((res = nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt)) <= 0) {
     }
-    printf("\033[A");
-    printf("\033[K");
+//    printf("\033[A");
+//    printf("\033[K");
     char* output = (char*)malloc(17 * sizeof(char));
     if (authenticate_sector(pnd, block, keyA, true, nt)) {
         read_block(pnd, block, blockData);

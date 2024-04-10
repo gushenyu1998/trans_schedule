@@ -8,7 +8,11 @@
 #endif //PROJECT_USENFC_H
 
 #include <nfc/nfc.h>
+#include <stdio.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
-char* readNFC(void);
-void writeToNFC(char* input);
+char* readNFC(uint8_t sector);
+void writeToNFC(char* input, uint8_t sector);
 void init_nfc(void);
