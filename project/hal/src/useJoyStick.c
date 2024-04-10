@@ -117,6 +117,11 @@ void selectScheduleRecall(char *name)
     int scheduleIndex = 0;
     int timeOfWait = 5;
 
+    transStruct_t * busStruct = getBusStruct();
+    int busStructSize = getBusStructSize();
+    int max_display = getMaxDisplay();
+    recallSchedule_t * recallSchedule = getRecallSchedule();
+
     char *listOfDetection[] = {
         JOYSTICK_IN_PRESS,
         JOYSTICK_IN_UP,

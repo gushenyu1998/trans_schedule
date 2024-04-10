@@ -33,19 +33,15 @@ typedef struct recallSchedule_t
     char * sentence;
 }recallSchedule_t;
 
-static int max_display = 3;
-
-
-//the data sturcture for storing the bus schedule
-char* scheduleBuffer[BUFFER_SIZE];
-int schduleBufferSize = 0;
-transStruct_t * busStruct;
-int busStructSize = 0;
-
-//the data stucture store the recall, set the buffer size up to 100
-recallSchedule_t recallSchedule[BUFFER_SIZE];
-
-
 //this function will call the API and update the schdule, need to be call once per minutes
 void UpdateSchedule(char * API_query);
+
+char **getBusSchedule();
+int getBusScheduleSize();
+transStruct_t *getBusStruct();
+int getBusStructSize();
+recallSchedule_t *getRecallSchedule();
+int getMaxDisplay();
+void setMaxDisplay(int newMaxDisplay);
+
 #endif

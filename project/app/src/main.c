@@ -10,22 +10,23 @@ int main(void)
 //	freeTransStruct(size, a);
 
 
-    // ---------------------------- TTS ----------------------------
+    // // ---------------------------- TTS ----------------------------
 
-    initialize_flite();
-    cst_voice *voice = setup_voice();
+    // initialize_flite();
+    // cst_voice *voice = setup_voice();
 
-    const char *text = "Bus fifty nine departing soon at stop one";
-    synthesize_text_to_file(text, voice, "play");
+    // const char *text = "Bus fifty nine departing soon at stop one";
+    // synthesize_text_to_file(text, voice, "play");
 
-    // ---------------------------- NFC ----------------------------
+    // // ---------------------------- NFC ----------------------------
 
-    init_nfc();
+    // init_nfc();
 
-    char inputString[] = "Tommy";
-    writeToNFC(inputString);
-    char* output = readNFC();
-    printf("Name: %s\n", output);
+    // char inputString[] = "Tommy";
+    // writeToNFC(inputString);
+    // char* output = readNFC();
+    // printf("Name: %s\n", output);
+    UpdateSchedule("https://api.translink.ca/rttiapi/v1/stops/55713/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=2");
 
 
 	return 1;
