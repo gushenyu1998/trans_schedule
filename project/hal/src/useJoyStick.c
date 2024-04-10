@@ -132,7 +132,7 @@ void selectScheduleRecall(char *name)
         printf("Which Route you want to wait? %s\n", busStruct[busIndex].RouteNo);
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
         // user input up
-        if (userInput & (1 << 1) != 0)
+        if ((userInput & (1 << 1)) != 0)
         {
             busIndex--;
             if (busIndex < 0)
@@ -140,13 +140,13 @@ void selectScheduleRecall(char *name)
         }
 
         // user input down
-        if (userInput & (1 << 2) != 0)
+        if ((userInput & (1 << 2)) != 0)
         {
             busIndex = (busIndex + 1) % busStructSize;
         }
 
         // user input press
-        if (userInput & 1 != 0)
+        if ((userInput & 1) != 0)
         {
             break;
         }
@@ -161,7 +161,7 @@ void selectScheduleRecall(char *name)
         printf("Which time do you want to pick up? %s\n", busStruct[busIndex].schedule[scheduleIndex].ExpectedLeaveTime);
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
         // user input up
-        if (userInput & (1 << 1) != 0)
+        if ((userInput & (1 << 1)) != 0)
         {
             scheduleIndex--;
             if (scheduleIndex < 0)
@@ -169,7 +169,7 @@ void selectScheduleRecall(char *name)
         }
 
         // user input down
-        if (userInput & (1 << 2) != 0)
+        if ((userInput & (1 << 2)) != 0)
         {
             scheduleIndex = (scheduleIndex + 1) % max_display;
         }
@@ -187,10 +187,10 @@ void selectScheduleRecall(char *name)
     while (true)
     {
         // goes around the seconds level and select the bus schedule
-        printf("How much time you want to notice in advance? %s mins\n", timeOfWait);
+        printf("How much time you want to notice in advance? %d mins\n", timeOfWait);
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
         // user input up
-        if (userInput & (1 << 1) != 0)
+        if ((userInput & (1 << 1)) != 0)
         {
             timeOfWait--;
             if (timeOfWait < 0)
@@ -198,7 +198,7 @@ void selectScheduleRecall(char *name)
         }
 
         // user input down
-        if (userInput & (1 << 2) != 0)
+        if ((userInput & (1 << 2)) != 0)
         {
            timeOfWait = (timeOfWait + 1) % 15;
         }

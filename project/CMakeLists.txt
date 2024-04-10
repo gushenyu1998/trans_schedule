@@ -21,3 +21,4 @@ set(ENV{PKG_CONFIG_PATH} "/usr/lib/arm-linux-gnueabihf/pkgconfig")
 
 find_package(PkgConfig)
 pkg_check_modules(LIBNFC REQUIRED libnfc)
+pkg_check_modules(JSON-C REQUIRED json-c)

@@ -10,7 +10,6 @@ find_package(Threads REQUIRED)
 target_link_libraries(Project LINK_PRIVATE Threads::Threads)
 find_package(CURL REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(JSON-C REQUIRED json-c)
 
 include_directories(${CURL_INCLUDE_DIRS})
 include_directories(${JSON-C_INCLUDE_DIRS})
