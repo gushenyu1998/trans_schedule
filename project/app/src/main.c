@@ -26,9 +26,9 @@ int main(void)
     // writeToNFC(inputString);
     // char* output = readNFC();
     // printf("Name: %s\n", output);
-    UpdateSchedule("https://api.translink.ca/rttiapi/v1/stops/55713/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=2");
-
-
+    inititalize_JoyStick();
+    UpdateSchedule("https://api.translink.ca/rttiapi/v1/stops/55714/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=3");
+    selectScheduleRecall("Peter");
 	return 1;
 }
 

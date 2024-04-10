@@ -25,16 +25,17 @@ typedef struct transStruct_t
     const char *RouteNo;
     const char *RouteName;
     scheduleStruct *schedule;
+    int scheduleSize;
 } transStruct_t;
 
 typedef struct recallSchedule_t
 {
     time_t schedule_time;
-    char * sentence;
-}recallSchedule_t;
+    char *sentence;
+} recallSchedule_t;
 
-//this function will call the API and update the schdule, need to be call once per minutes
-void UpdateSchedule(char * API_query);
+// this function will call the API and update the schdule, need to be call once per minutes
+void UpdateSchedule(char *API_query);
 
 char **getBusSchedule();
 int getBusScheduleSize();

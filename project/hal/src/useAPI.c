@@ -100,6 +100,7 @@ struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
                 busSchedule[i].RouteNo = json_object_get_string(route_no);
                 busSchedule[i].RouteName = json_object_get_string(route_name);
                 size_t schedule_size = json_object_array_length(schedules);
+                busSchedule[i].scheduleSize = schedule_size;
                 busSchedule[i].schedule = malloc(sizeof(scheduleStruct) * schedule_size);
                 for (size_t j = 0; j < schedule_size; j++)
                 {
@@ -115,10 +116,13 @@ struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
                     busSchedule[i].schedule[j].ExpectedCountdown = json_object_get_string(expected_count_down);
                     busSchedule[i].schedule[j].CancelledStop = json_object_get_boolean(cancelled_Stop);
                     busSchedule[i].schedule[j].CancelledTrip = json_object_get_boolean(cancelled_trip);
-                    if (!busSchedule[i].schedule[j].CancelledStop && busSchedule[i].schedule[j].CancelledTrip) // if the schedule or the stop is not cancelled, then add the size of buffer
+
+                    int expectedCountDown;
+                    sscanf(busSchedule[i].schedule[j].ExpectedCountdown, "%d", &expectedCountDown);
+                    if (!busSchedule[i].schedule[j].CancelledStop && !busSchedule[i].schedule[j].CancelledTrip && expectedCountDown > 0) // if the schedule or the stop is not cancelled, then add the size of buffer
                     {
                         char *schedule = malloc(sizeof(char) * BUFFER_SIZE);
-                        sprintf("%s %s %s, %smins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedLeaveTime, busSchedule[i].schedule[j].ExpectedCountdown);
+                        sprintf(schedule, "%s %s %s, %smins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedLeaveTime, busSchedule[i].schedule[j].ExpectedCountdown);
                         scheduleBuffer[schduleBufferSize] = schedule;
                         schduleBufferSize++;
                     }
@@ -159,7 +163,7 @@ void UpdateSchedule(char *API_query)
     {
         if (i > max_display)
             break;
-        printf(scheduleBuffer[i]); // replace this line to the displaying
+        printf("%s\n",scheduleBuffer[i]); // replace this line to the displaying
     }
 
     // search the recall schedule here and play the sound
@@ -209,5 +213,5 @@ int getMaxDisplay()
 
 void setMaxDisplay(int newMaxDisplay)
 {
-    return newMaxDisplay;
+    max_display = newMaxDisplay;
 }

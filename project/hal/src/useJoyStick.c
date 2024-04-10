@@ -117,10 +117,9 @@ void selectScheduleRecall(char *name)
     int scheduleIndex = 0;
     int timeOfWait = 5;
 
-    transStruct_t * busStruct = getBusStruct();
+    transStruct_t *busStruct = getBusStruct();
     int busStructSize = getBusStructSize();
-    int max_display = getMaxDisplay();
-    recallSchedule_t * recallSchedule = getRecallSchedule();
+    recallSchedule_t *recallSchedule = getRecallSchedule();
 
     char *listOfDetection[] = {
         JOYSTICK_IN_PRESS,
@@ -155,11 +154,11 @@ void selectScheduleRecall(char *name)
         {
             break;
         }
-
         if (userInput == 0)
             return;
+        userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
     }
-
+    waitForGpioEdge(listOfDetection, waitTimes, 5);
     while (true)
     {
         // goes around the seconds level and select the bus schedule
@@ -170,13 +169,13 @@ void selectScheduleRecall(char *name)
         {
             scheduleIndex--;
             if (scheduleIndex < 0)
-                scheduleIndex = max_display - 1;
+                scheduleIndex = busStruct[busIndex].scheduleSize - 1;
         }
 
         // user input down
         if ((userInput & (1 << 2)) != 0)
         {
-            scheduleIndex = (scheduleIndex + 1) % max_display;
+            scheduleIndex = (scheduleIndex + 1) % busStruct[busIndex].scheduleSize;
         }
 
         // user input press
@@ -184,14 +183,14 @@ void selectScheduleRecall(char *name)
         {
             break;
         }
-
         if (userInput == 0)
             return;
+        waitForGpioEdge(listOfDetection, waitTimes, 5);
     }
-
+    waitForGpioEdge(listOfDetection, waitTimes, 5);
     while (true)
     {
-        // goes around the seconds level and select the bus schedule
+        // select the time to notice in advance
         printf("How much time you want to notice in advance? %d mins\n", timeOfWait);
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
         // user input up
@@ -199,13 +198,13 @@ void selectScheduleRecall(char *name)
         {
             timeOfWait--;
             if (timeOfWait < 0)
-                timeOfWait = timeOfWait - 1;
+                timeOfWait = 15;
         }
 
         // user input down
         if ((userInput & (1 << 2)) != 0)
         {
-           timeOfWait = (timeOfWait + 1) % 15;
+            timeOfWait = (timeOfWait + 1) % 15;
         }
 
         // user input press
@@ -216,36 +215,37 @@ void selectScheduleRecall(char *name)
 
         if (userInput == 0)
             return;
-        // select the time to notice in advance
+        waitForGpioEdge(listOfDetection, waitTimes, 5);
     }
-
+    bool flag = false;
     // load the schedule of recall from here
     for (size_t i = 0; i < BUFFER_SIZE; i++)
     {
-        bool flag = false;
-        //find a block of the buff is NULL
+
+        // find a block of the buff is NULL
         if (recallSchedule[i].sentence == NULL)
         {
-            // prepare the sentence of 
-            char * recall = malloc(sizeof(char)*100);
-            sprintf(recall, "%s, route %s will come in %d minutes", name, busStruct[busIndex].RouteNo, timeOfWait);  
-
-            //load the time to the time_t based on the Expected count down
+            // prepare the sentence of
+            char *recall = malloc(sizeof(char) * 100);
+            sprintf(recall, "%s, route %s will come in %d minutes", name, busStruct[busIndex].RouteNo, timeOfWait);
+            printf("%s\n", recall);
+            // load the time to the time_t based on the Expected count down
             int expected_countdown;
             sscanf(busStruct[busIndex].schedule[scheduleIndex].ExpectedCountdown, "%d", &expected_countdown);
-            expected_countdown *=60;
+            expected_countdown *= 60;
             time_t scheduledTime;
             time(&scheduledTime);
             scheduledTime += expected_countdown;
 
-            //load the data to the sturcture
+            // load the data to the sturcture
             recallSchedule[i].schedule_time = scheduledTime;
             recallSchedule[i].sentence = recall;
             flag = true;
+            break;
         }
-        if (!flag)
-        {
-            printf("Buffer is full\n"); // replace it to displaying
-        }
+    }
+    if (!flag)
+    {
+        printf("Buffer is full\n"); // replace it to displaying
     }
 }
