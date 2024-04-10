@@ -175,7 +175,7 @@ void selectScheduleRecall(char *name)
         }
 
         // user input press
-        if (userInput & 1 != 0)
+        if ((userInput & 1) != 0)
         {
             break;
         }
@@ -204,7 +204,7 @@ void selectScheduleRecall(char *name)
         }
 
         // user input press
-        if (userInput & 1 != 0)
+        if ((userInput & 1) != 0)
         {
             break;
         }
