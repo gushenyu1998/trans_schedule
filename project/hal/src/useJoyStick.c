@@ -6,10 +6,17 @@ void inititalize_JoyStick()
     char gpioCommand[1024];
     memset(gpioCommand, 0, sizeof(gpioCommand));
     sprintf(gpioCommand, "config-pin %s gpio", JOYSTICK_GPIO_LEFT);
+    runCommand(gpioCommand);
     sprintf(gpioCommand, "config-pin %s gpio", JOYSTICK_GPIO_RIGHT);
+    runCommand(gpioCommand);
     sprintf(gpioCommand, "config-pin %s gpio", JOYSTICK_GPIO_UP);
+    runCommand(gpioCommand);
     sprintf(gpioCommand, "config-pin %s gpio", JOYSTICK_GPIO_DOWN);
+    runCommand(gpioCommand);
     sprintf(gpioCommand, "config-pin %s gpio", JOYSTICK_GPIO_PRESS);
+    runCommand(gpioCommand);
+    sprintf(gpioCommand, "config-pin %s gpio", BUTTON_GPIO);
+    runCommand(gpioCommand);
     struct timespec reqDelay = {0, 500000000};
     nanosleep(&reqDelay, (struct timespec *)NULL);
 
@@ -23,6 +30,8 @@ void inititalize_JoyStick()
     writeToFile(JOYSTICK_EDGE_UP, "both");
     writeToFile(JOYSTICK_DIRECTION_DOWN, "in");
     writeToFile(JOYSTICK_EDGE_DOWN, "both");
+    writeToFile(BUTTON_DIRECTION, "in");
+    writeToFile(BUTTON_EDGE, "both");
 }
 
 /**

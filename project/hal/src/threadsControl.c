@@ -39,34 +39,39 @@ bool ifShutdown()
     return result;
 }
 
-// update the bus schedule once per minutes
-void *regularUpdate(char *APIQuery)
-{
-    if (!ifShutdown())
-    {
-        UpdateSchedule(APIQuery);
-    }
-}
+// // update the bus schedule once per minutes
+// void *regularUpdate(char *APIQuery)
+// {
+//     if (!ifShutdown())
+//     {
+//         UpdateSchedule(APIQuery);
+//     }
+// }
 
-void *NFCSelection()
-{
-    if (!ifShutdown())
-    {
-        char *name;
-        // wait name for NFC
-        if (strcmp(name, "Stop"))
-        {
-            signalShutdown();
-            return;
-        }
-        selectScheduleRecall(name);
-    }
-}
+// void *NFCSelection()
+// {
+//     if (!ifShutdown())
+//     {
+//         char *name;
+//         // wait name for NFC
+//         if (strcmp(name, "Stop"))
+//         {
+//             signalShutdown();
+//             return;
+//         }
+//         selectScheduleRecall(name);
+//     }
+// }
 
-void *waitForButton()
-{
-    if (!ifShutdown())
-    {
-        
-    }
-}
+// void *waitForButton()
+// {
+//     char * button = {BUTTON_VALUE};
+//     int waitTimes[] = {-1};  
+//     if (!ifShutdown())
+//     {
+//         char * result = waitForGpioEdge(button, waitTimes, 1);
+//         if (result != 0){
+//             printf("Print Schedule Here\n");
+//         }
+//     }
+// }

@@ -28,9 +28,9 @@
 #define JOYSTICK_GPIO_PRESS "p8.17"
 
 #define BUTTON_GPIO "p9.11"
-#define BUTTON_PRESS "/sys/class/gpio/gpio30/direction"
-#define BUTTON_PRESS "/sys/class/gpio/gpio30/edge"
-#define BUTTON_PRESS "/sys/class/gpio/gpio30/value"
+#define BUTTON_DIRECTION "/sys/class/gpio/gpio30/direction"
+#define BUTTON_EDGE "/sys/class/gpio/gpio30/edge"
+#define BUTTON_VALUE "/sys/class/gpio/gpio/value"
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
