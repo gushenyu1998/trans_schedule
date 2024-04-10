@@ -27,6 +27,11 @@
 #define JOYSTICK_GPIO_DOWN "p8.16"
 #define JOYSTICK_GPIO_PRESS "p8.17"
 
+#define BUTTON_GPIO "p9.11"
+#define BUTTON_PRESS "/sys/class/gpio/gpio30/direction"
+#define BUTTON_PRESS "/sys/class/gpio/gpio30/edge"
+#define BUTTON_PRESS "/sys/class/gpio/gpio30/value"
+
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
@@ -43,6 +48,8 @@
 #include "hal/usePWM.h"
 // initialize the joy stick and set up the epoll function
 void inititalize_JoyStick();
+
+char waitForGpioEdge(char **fileNamesForGpioValue, int *waitMilliseconds, int numGpios);
 
 // Thread function of using the joy stick with Epoll
 void selectScheduleRecall(char *name);
