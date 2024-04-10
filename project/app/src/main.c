@@ -21,18 +21,11 @@ int main(void)
 //	transStruct_t *a = (transStruct_t *) ReadFromTransAPI(&size, calling);
 //	freeTransStruct(size, a);
 
-    // ---------------------------- TTS ----------------------------
-
-//    espeak_Initialize(AUDIO_OUTPUT_PLAYBACK, 0, NULL, 0);
-//    espeak_SetVoiceByName("en-us+f4");
-//    espeak_SetParameter(espeakRATE, 170, 0);
-//    espeak_SetSynthCallback(SynthCallback);
-//    const char *text = "Bus fifty nine departing soon at stop one";
-//    unsigned int unique_identifier;
-//    espeak_Synth(text, strlen(text) + 1, 0, POS_CHARACTER, 0, espeakCHARS_AUTO, &unique_identifier, NULL);
-//    espeak_Synchronize();
 
     // ---------------------------- TTS ----------------------------
+
+//    initialize_flite();
+//    cst_voice *voice = setup_voice();
 
 //    initialize_flite();
 //    cst_voice *voice = setup_voice();

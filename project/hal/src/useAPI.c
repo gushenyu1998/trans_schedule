@@ -1,4 +1,16 @@
 #include "hal/useAPI.h"
+
+int max_display = 3;
+
+// the data sturcture for storing the bus schedule
+char *scheduleBuffer[BUFFER_SIZE];
+int schduleBufferSize = 0;
+transStruct_t *busStruct;
+int busStructSize = 0;
+
+// the data stucture store the recall, set the buffer size up to 100
+recallSchedule_t recallSchedule[BUFFER_SIZE];
+
 struct MemoryStruct
 {
     char *memory;
@@ -47,7 +59,7 @@ struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
     chunk.size = 0;
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
-    transStruct_t *busSchedule = NULL; //create new structure to store the bus schdule
+    transStruct_t *busSchedule = NULL;                       // create new structure to store the bus schdule
     memset(scheduleBuffer, 0, sizeof(char *) * BUFFER_SIZE); // clean up the buffer
     schduleBufferSize = 0;
     if (curl)
@@ -88,6 +100,7 @@ struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
                 busSchedule[i].RouteNo = json_object_get_string(route_no);
                 busSchedule[i].RouteName = json_object_get_string(route_name);
                 size_t schedule_size = json_object_array_length(schedules);
+                busSchedule[i].scheduleSize = schedule_size;
                 busSchedule[i].schedule = malloc(sizeof(scheduleStruct) * schedule_size);
                 for (size_t j = 0; j < schedule_size; j++)
                 {
@@ -103,10 +116,13 @@ struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
                     busSchedule[i].schedule[j].ExpectedCountdown = json_object_get_string(expected_count_down);
                     busSchedule[i].schedule[j].CancelledStop = json_object_get_boolean(cancelled_Stop);
                     busSchedule[i].schedule[j].CancelledTrip = json_object_get_boolean(cancelled_trip);
-                    if (!busSchedule[i].schedule[j].CancelledStop && busSchedule[i].schedule[j].CancelledTrip) //if the schedule or the stop is not cancelled, then add the size of buffer
+
+                    int expectedCountDown;
+                    sscanf(busSchedule[i].schedule[j].ExpectedCountdown, "%d", &expectedCountDown);
+                    if (!busSchedule[i].schedule[j].CancelledStop && !busSchedule[i].schedule[j].CancelledTrip && expectedCountDown > 0) // if the schedule or the stop is not cancelled, then add the size of buffer
                     {
                         char *schedule = malloc(sizeof(char) * BUFFER_SIZE);
-                        sprintf("%s %s %s, %smins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedLeaveTime, busSchedule[i].schedule[j].ExpectedCountdown);
+                        sprintf(schedule, "%s %s %s, %smins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedLeaveTime, busSchedule[i].schedule[j].ExpectedCountdown);
                         scheduleBuffer[schduleBufferSize] = schedule;
                         schduleBufferSize++;
                     }
@@ -129,33 +145,73 @@ void freeTransStruct(int size, transStruct_t *trans_info)
     free(trans_info);
 }
 
-void freeScheduleBuffer(int size, char ** buffer){
-    for (int i = 0; i < size ; i++)
+void freeScheduleBuffer(int size, char **buffer)
+{
+    for (int i = 0; i < size; i++)
     {
         free(buffer[i]);
     }
 }
 
-//this function should call every minutes 
-void UpdateSchedule(char * API_query){
+// this function should call every minutes
+void UpdateSchedule(char *API_query)
+{
     freeTransStruct(busStructSize, busStruct);
     freeScheduleBuffer(schduleBufferSize, scheduleBuffer);
     busStruct = ReadFromTransAPI(&busStructSize, API_query);
     for (int i = 0; i < schduleBufferSize; i++)
     {
-        if(i > max_display) break;
-        printf(scheduleBuffer[i]); //replace this line to the displaying
+        if (i > max_display)
+            break;
+        printf("%s\n",scheduleBuffer[i]); // replace this line to the displaying
     }
 
     // search the recall schedule here and play the sound
 }
 
-//play the sound of bus schdule
-void playBusSchdule(){
+// play the sound of bus schdule
+void playBusSchdule()
+{
     for (int i = 0; i < schduleBufferSize; i++)
     {
-        if(i > max_display) break;
+        if (i > max_display)
+            break;
         // play the sound at here
     }
 }
 
+// get bus schedule
+char **getBusSchedule()
+{
+    return scheduleBuffer;
+}
+
+int getBusScheduleSize()
+{
+    return schduleBufferSize;
+}
+
+transStruct_t *getBusStruct()
+{
+    return busStruct;
+}
+
+int getBusStructSize()
+{
+    return busStructSize;
+}
+
+recallSchedule_t *getRecallSchedule()
+{
+    return recallSchedule;
+}
+
+int getMaxDisplay()
+{
+    return max_display;
+}
+
+void setMaxDisplay(int newMaxDisplay)
+{
+    max_display = newMaxDisplay;
+}

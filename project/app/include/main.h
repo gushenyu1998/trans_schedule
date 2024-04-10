@@ -7,4 +7,5 @@
 #include "hal/readNWrite.h"
 #include "hal/threadsControl.h"
 #include "hal/useAPI.h"
+#include "hal/useJoyStick.h"
 #endif
