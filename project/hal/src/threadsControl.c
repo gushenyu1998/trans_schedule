@@ -6,7 +6,7 @@ bool stop = false;
 // Mutexes for useLED and Sampler modules
 pthread_mutex_t mainMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_t threads[3];
-void *regularUpdate(char *APIQuery);
+void *regularUpdate(void *arg);
 void *NFCSelection();
 void *waitForButton();
 
@@ -18,8 +18,12 @@ void speak_and_play(const char *text) {
 }
 
 // Start all threads such as the udp and acclerometer
-void startThreads() {
-    pthread_create(&threads[0], NULL, regularUpdate, "https://api.translink.ca/rttiapi/v1/stops/55714/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=3");
+void startThreads(char* API_query) {
+    char url[256];
+    sprintf(url, "https://api.translink.ca/rttiapi/v1/stops/%s/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=3", API_query);
+    printf("URL: %s\n", url);
+    char *url_copy = strdup(url);
+    pthread_create(&threads[0], NULL, regularUpdate, url_copy);
     pthread_create(&threads[1], NULL, NFCSelection, NULL);
     pthread_create(&threads[2], NULL, waitForButton, NULL);
 }
@@ -48,9 +52,10 @@ bool ifShutdown() {
 }
 
 // update the bus schedule once per minutes
-void *regularUpdate(char *APIQuery) {
+void *regularUpdate(void *arg) {
     while (!ifShutdown()) {
         //update the bus schedule
+        char *APIQuery = (char *) arg;
         UpdateSchedule(APIQuery);
 
         // play the audio of notice
@@ -98,6 +103,7 @@ void *NFCSelection() {
         selectScheduleRecall(name);
         free(name);
     }
+    return NULL;
 }
 
 void *waitForButton() {
@@ -114,4 +120,5 @@ void *waitForButton() {
             }
         }
     }
+    return NULL;
 }

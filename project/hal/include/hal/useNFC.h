@@ -12,6 +12,6 @@
 #include <string.h>
 
 char* readNFC(uint8_t sector);
-void writeToNFC(char* input, uint8_t sector);
+void * writeToNFC(char* input, uint8_t sector);
 void init_nfc(void);
 

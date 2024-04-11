@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <nfc/nfc.h>
 #include <nfc/nfc-types.h>
@@ -63,7 +64,7 @@ static void hexToAlphabeticalString(uint8_t *hexData, char *output, size_t dataS
     output[dataSize] = '\0'; // Null-terminate the string
 }
 
-void writeToNFC(char* inputString, uint8_t sector){
+void * writeToNFC(char* inputString, uint8_t sector){
     nfc_device* pnd;
     nfc_target nt;
     nfc_context* context;
@@ -76,7 +77,7 @@ void writeToNFC(char* inputString, uint8_t sector){
     while (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) <= 0);
     uint8_t block = sector * 4;
     if (!authenticate_sector(pnd, block, keyA1, true, nt)) {
-        usleep(100000);
+        usleep(50000);
         nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt); // Reselect the target
         if (!authenticate_sector(pnd, block, keyA2, false, nt)) {
             fprintf(stderr, "Authentication with both keys failed.\n");
@@ -90,6 +91,7 @@ void writeToNFC(char* inputString, uint8_t sector){
     write_block(pnd, block, data);
     nfc_close(pnd);
     nfc_exit(context);
+    return NULL;
 }
 
 char* readNFC(uint8_t sector) {
@@ -112,7 +114,7 @@ char* readNFC(uint8_t sector) {
     }
     uint8_t block = sector * 4;
     if (!authenticate_sector(pnd, block, keyA1, true, nt)) {
-        usleep(100000);
+        usleep(50000);
         nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt); // Reselect the target
         if (!authenticate_sector(pnd, block, keyA2, false, nt)) {
             fprintf(stderr, "Authentication with both keys failed.\n");

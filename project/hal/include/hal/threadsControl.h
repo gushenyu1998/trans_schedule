@@ -13,7 +13,7 @@
 #include "hal/useAPI.h"
 
 // Start thread of using udp, accelerometer and Joy stick
-void startThreads();
+void startThreads(char *API_query);
 
 // Stop all threads and joins
 void joinThreads();
