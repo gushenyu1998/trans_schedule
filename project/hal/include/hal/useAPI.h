@@ -37,7 +37,10 @@ typedef struct recallSchedule_t
 // this function will call the API and update the schdule, need to be call once per minutes
 void UpdateSchedule(char *API_query);
 
-char **getBusSchedule();
+void freeTransStruct(int size, transStruct_t *trans_info);
+void freeScheduleBuffer(int size, recallSchedule_t *buffer);
+
+recallSchedule_t * getBusSchedule();
 int getBusScheduleSize();
 transStruct_t *getBusStruct();
 int getBusStructSize();

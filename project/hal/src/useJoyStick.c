@@ -202,18 +202,20 @@ void selectScheduleRecall(char *name)
         // select the time to notice in advance
         printf("How much time you want to notice in advance? %d mins\n", timeOfWait);
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
+        int expectedCountDown;
+        sscanf(busStruct[busIndex].schedule[scheduleIndex].ExpectedCountdown, "%d", &expectedCountDown);
         // user input up
         if ((userInput & (1 << 1)) != 0)
         {
             timeOfWait--;
             if (timeOfWait < 0)
-                timeOfWait = 15;
+                timeOfWait = MIN(expectedCountDown, 15);
         }
 
         // user input down
         if ((userInput & (1 << 2)) != 0)
         {
-            timeOfWait = (timeOfWait + 1) % 15;
+            timeOfWait = (timeOfWait + 1) % MIN(expectedCountDown, 15);
         }
 
         // user input press
@@ -237,14 +239,14 @@ void selectScheduleRecall(char *name)
             // prepare the sentence of
             char *recall = malloc(sizeof(char) * 100);
             sprintf(recall, "%s, route %s will come in %d minutes", name, busStruct[busIndex].RouteNo, timeOfWait);
-            printf("%s\n", recall);
+            printf("Recall: %s\n", recall);
             // load the time to the time_t based on the Expected count down
             int expected_countdown;
             sscanf(busStruct[busIndex].schedule[scheduleIndex].ExpectedCountdown, "%d", &expected_countdown);
-            expected_countdown *= 60;
             time_t scheduledTime;
             time(&scheduledTime);
-            scheduledTime += expected_countdown;
+            scheduledTime += expected_countdown*60;
+            scheduledTime -= timeOfWait * 60;
 
             // load the data to the sturcture
             recallSchedule[i].schedule_time = scheduledTime;

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <math.h>
 
 #include "hal/useJoyStick.h"
 #include "hal/readNWrite.h"

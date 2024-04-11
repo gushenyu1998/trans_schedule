@@ -20,15 +20,18 @@ int main(void)
 
     // // ---------------------------- NFC ----------------------------
 
-    // init_nfc();
-
-    // char inputString[] = "Tommy";
-    // writeToNFC(inputString);
-    // char* output = readNFC();
-    // printf("Name: %s\n", output);
+    init_nfc();
     inititalize_JoyStick();
-    UpdateSchedule("https://api.translink.ca/rttiapi/v1/stops/55714/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=3");
-    selectScheduleRecall("Peter");
-	return 1;
+    startThreads();
+    joinThreads();
+
+//    char inputString[] = "Santa";
+//    writeToNFC(inputString, 2);
+//
+//    for (int i=1; i<=2; i++){
+//        char* output = readNFC(i);
+//        printf("Name: %s\n", output);
+//        free(output);
+//    }
 }
 
