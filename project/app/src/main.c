@@ -2,6 +2,7 @@
 #include <flite/flite.h>
 #include <alsa/asoundlib.h>
 #include <stdio.h>
+#include "hal/useNFC.h"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -77,35 +78,21 @@ int main(int argc, char *argv[])
 
     // // ---------------------------- NFC ----------------------------
 
-//    init_nfc();
+    init_nfc();
 //    char inputString[] = "Santa";
     inititalize_JoyStick();
     startThreads(argv[1]);
 
     // For random
-    //srand(time(NULL));
+//    srand(time(NULL));
     printf("Before display init\n");
     displaylogic_init();
     printf("After display init\n");
 
-
+    joinThreads();
     // Cleanup
     displaylogic_cleanup();
-    shutdown_all_pins();
-
-
-
-
-
-    joinThreads();
-
-//    char inputString[] = "Santa";
-//    writeToNFC(inputString, 2);
-//
-//    for (int i=1; i<=2; i++){
-//        char* output = readNFC(i);
-//        printf("Name: %s\n", output);
-//        free(output);
-//    }
+    printf("---------------------------------------------------\n");
+    // shutdown_all_pins();
 }
 

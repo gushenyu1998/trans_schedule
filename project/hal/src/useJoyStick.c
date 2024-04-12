@@ -1,5 +1,6 @@
 #include "hal/useJoyStick.h"
 #include "hal/useAPI.h"
+#include "displaylogic.h"
 
 void inititalize_JoyStick()
 {
@@ -122,6 +123,11 @@ char waitForGpioEdge(char **fileNamesForGpioValue, int *waitMilliseconds, int nu
 // function for switch mode to user selection
 void selectScheduleRecall(char *name)
 {
+    // Start critical section (WRITE)
+    lockUpdateMutex();
+    setNFCOrUpdate(false);
+    unlockUpdateMutex();
+
     int busIndex = 0;
     int scheduleIndex = 0;
     int timeOfWait = 5;
@@ -129,6 +135,8 @@ void selectScheduleRecall(char *name)
     transStruct_t *busStruct = getBusStruct();
     int busStructSize = getBusStructSize();
     recallSchedule_t *recallSchedule = getRecallSchedule();
+    char ** locations = getLocationBuffer();
+    char ** times = getTimeBuffer();
 
     char *listOfDetection[] = {
         JOYSTICK_IN_PRESS,
@@ -142,7 +150,22 @@ void selectScheduleRecall(char *name)
     while (true)
     {
         // modify it to display
-        printf("Which Route you want to wait? %s\n", busStruct[busIndex].RouteNo);
+        // printf("Which Route you want to wait? %s\n", busStruct[busIndex].RouteNo);
+
+        // setup location lines
+        sprintf(locations[0], "Which BUS to take:");
+        sprintf(locations[1], " ");
+        sprintf(locations[2], " ");
+
+        // setup time lines
+        sprintf(times[0], "%s ", busStruct[busIndex].RouteNo);
+        sprintf(times[1], " ");
+        sprintf(times[2], " ");
+
+        lockDisplayMutex();
+        setFlagScreenDisplay(true);
+        unlockDisplayMutex();
+
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
         // user input up
         if ((userInput & (1 << 1)) != 0)
@@ -171,7 +194,19 @@ void selectScheduleRecall(char *name)
     while (true)
     {
         // goes around the seconds level and select the bus schedule
-        printf("Which time do you want to pick up? %s\n", busStruct[busIndex].schedule[scheduleIndex].ExpectedLeaveTime);
+        sprintf(locations[0], "Time to take %s:", busStruct[busIndex].RouteNo);
+        sprintf(locations[1], " ");
+        sprintf(locations[2], " ");
+
+        // setup time lines
+        sprintf(times[0], "%s ", busStruct[busIndex].schedule[scheduleIndex].ExpectedLeaveTime);
+        sprintf(times[1], " ");
+        sprintf(times[2], " ");
+
+        lockDisplayMutex();
+        setFlagScreenDisplay(true);
+        unlockDisplayMutex();
+
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
         // user input up
         if ((userInput & (1 << 1)) != 0)
@@ -201,6 +236,19 @@ void selectScheduleRecall(char *name)
     {
         // select the time to notice in advance
         printf("How much time you want to notice in advance? %d mins\n", timeOfWait);
+        sprintf(locations[0], "Time notice in advance:");
+        sprintf(locations[1], " ");
+        sprintf(locations[2], " ");
+
+        // setup time lines
+        sprintf(times[0], "%d ", timeOfWait);
+        sprintf(times[1], " ");
+        sprintf(times[2], " ");
+
+        lockDisplayMutex();
+        setFlagScreenDisplay(true);
+        unlockDisplayMutex();
+
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
         int expectedCountDown;
         sscanf(busStruct[busIndex].schedule[scheduleIndex].ExpectedCountdown, "%d", &expectedCountDown);
@@ -239,7 +287,6 @@ void selectScheduleRecall(char *name)
             // prepare the sentence of
             char *recall = malloc(sizeof(char) * 100);
             sprintf(recall, "%s, route %s will come in %d minutes", name, busStruct[busIndex].RouteNo, timeOfWait);
-            printf("Recall: %s\n", recall);
             // load the time to the time_t based on the Expected count down
             int expected_countdown;
             sscanf(busStruct[busIndex].schedule[scheduleIndex].ExpectedCountdown, "%d", &expected_countdown);
@@ -259,4 +306,35 @@ void selectScheduleRecall(char *name)
     {
         printf("Buffer is full\n"); // replace it to displaying
     }
+    sprintf(locations[0], "Ok We will notify %s", name);
+    sprintf(locations[1], "%d MINS IN ADVANCE", timeOfWait);
+    sprintf(locations[2], "for bus %s", busStruct[busIndex].RouteNo);
+
+    // setup time lines
+    sprintf(times[0], " ");
+    sprintf(times[1], " ");
+    sprintf(times[2], " ");
+
+    lockDisplayMutex();
+    setFlagScreenDisplay(true);
+    unlockDisplayMutex();
+
+    sleepForMs(5000);
+
+
+    recallSchedule_t * scheduleBuffer = getBusSchedule();
+    sprintf(locations[0],"%s ", scheduleBuffer[0].sentence);
+    sprintf(times[0]," ");
+    sprintf(locations[1],"%s ", scheduleBuffer[1].sentence);
+    sprintf(times[1]," ");
+    sprintf(locations[2],"%s ", scheduleBuffer[2].sentence);
+    sprintf(times[2]," ");
+
+    lockUpdateMutex();
+    setNFCOrUpdate(true);
+    unlockUpdateMutex();
+
+    lockDisplayMutex();
+    setFlagScreenDisplay(true);
+    unlockDisplayMutex();
 }

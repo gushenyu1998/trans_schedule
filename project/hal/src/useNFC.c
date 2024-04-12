@@ -134,6 +134,6 @@ char* readNFC(uint8_t sector) {
 }
 
 void init_nfc(void){
-    writeToFile("/sys/devices/platform/ocp/ocp:P9_17_pinmux/state", "i2c");
-    writeToFile("/sys/devices/platform/ocp/ocp:P9_18_pinmux/state", "i2c");
+    writeToFile("/sys/devices/platform/ocp/ocp:P9_19_pinmux/state", "i2c");
+    writeToFile("/sys/devices/platform/ocp/ocp:P9_20_pinmux/state", "i2c");
 }

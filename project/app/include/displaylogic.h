@@ -36,23 +36,11 @@ void seventhLineNewText(const char* text, int spiFileDesc, uint8_t cmd);
 
 void eighthLineNewText(const char* text, int spiFileDesc, uint8_t cmd);
 
-// Get the updateScreenRequest value (true if we need to update, false if we don't)
-bool getUpdateScreenStatus(void);
-
-// Client requests for the screen to be updated
-void requestUpdateScreen(void);
-
 // Get the status of the thread (true means continue thread, false means stop thread)
 bool getThreadStatus(void);
 
 // Client requests to stop the thread
 void stopThread(void);
-
-//void writeToFile(const char* fileName, const char* value);
-//
-//int readFromFile(char *fileName);
-//
-//void runCommand(char* command);
 
 void sleepForMs(long long delayInMs);
 
@@ -88,5 +76,21 @@ void charToDisplay(char currentChar, int spiFileDesc, uint8_t cmd, uint8_t color
 void displaylogic_init(void);
 
 void displaylogic_cleanup(void);
+
+char ** getLocationBuffer(void);
+
+char ** getTimeBuffer(void);
+
+// get the flag of the screen display, true means able to flash the screen, false means screen is in flashing
+bool getFlagScreenDisplay(void);
+
+// set the flag of the screen display, true means able to flash the screen, false means screen is in flashing
+void setFlagScreenDisplay(bool flag);
+
+// get the flag of the screen update, true means Update hold the screen, false means NFC hold the screen
+bool getNFCOrUpdate(void);
+
+// set the flag of the screen update, true means Update hold the screen, false means NFC hold the screen
+void setNFCOrUpdate(bool flag);
 
 #endif

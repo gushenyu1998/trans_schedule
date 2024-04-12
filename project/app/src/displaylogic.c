@@ -1,5 +1,5 @@
 #include "displaylogic.h"
-
+#include "hal/threadsControl.h"
 // Assume pins already configured for SPI
 // E.g. for SPI1, CS0:
 // (bbg)$ config-pin P9_28 spi_cs
@@ -52,10 +52,24 @@
 #define WHITE_COLOR 0xFF
 
 // Global variables
-static pthread_t tid_displaylogic; 
-static pthread_mutex_t mutex_displaylogic = PTHREAD_MUTEX_INITIALIZER;
+static pthread_t tid_displaylogic;
 static bool continueThread = true; // Can be modified by other modules
-static bool updateScreenRequest = false; // Can be modified by other modules
+
+static bool flagScreenDisplay = false; // Can be modified by other modules
+static bool flagNFCOrUpdate =true; // false = NFC, true = Update
+
+// Strings for Bus info
+char firstLine[50];
+char secondsLine[50];
+char thirdLine[50];
+
+// strings for time
+char firstTime[10];
+char secondTime[10];
+char thirdTime[10];
+
+static char *locations[3] = {firstLine, secondsLine, thirdLine};
+static char *times[3] = {firstTime, secondTime, thirdTime};
 
 void *thread_displaylogic()
 {
@@ -92,54 +106,43 @@ void *thread_displaylogic()
     // Initialize the display by setting up a white background
     displayRectangle(spiFileDesc, cmd, 0xFF, 0, 319, 0, 239, true);
 
-    char *locations[3] = {"123 New Westminster", "143 SFU Burnaby", "405 Vancouver"};
-    char *times[3] = {"11:45 AM", "12:00 PM", "12:15 PM"};
-
-
-    bool statusContinueThread = true;
     bool statusUpdateScreen = false;
-    while(statusContinueThread == true) {
+    while(!ifShutdown()) {
         // Start of critical section (READ)
-        pthread_mutex_lock(&mutex_displaylogic);
-        {
-            statusContinueThread = getThreadStatus();
-            statusUpdateScreen = getUpdateScreenStatus();
-        }
-        // End of critical section
-        pthread_mutex_unlock(&mutex_displaylogic);
+        lockDisplayMutex();
+        statusUpdateScreen = getFlagScreenDisplay();
 
         // Check if we need to update the screen
         if(statusUpdateScreen == true) {
-            // printf("Update!\n");
+            printf("%s\n",locations[0]);
+            printf("%s\n",locations[1]);
+            printf("%s\n",locations[2]);
+
             // Clear the screen by setting a white background
             displayRectangle(spiFileDesc, cmd, 0xFF, 0, X_DISPLAY_DIMENSION - 1, 0, Y_DISPLAY_DIMENSION - 1, true);
-            sleepForMs(5000);
-
             // 1) Update the first line
-            firstLineNewText(locations[randomIntFrom0To2()], spiFileDesc, cmd);
+            firstLineNewText(locations[0], spiFileDesc, cmd);
 
             // 2) Update the second line
-            secondLineNewText(times[randomIntFrom0To2()], spiFileDesc, cmd);
+            secondLineNewText(times[0], spiFileDesc, cmd);
 
             // 3) Update the third line
             space(spiFileDesc, cmd, WHITE_COLOR, FONT_SIZE_2, FONT_SIZE_2_START_X, THIRD_LINE_Y, false);
 
             // 4) Update the fourth line
-            fourthLineNewText(locations[randomIntFrom0To2()], spiFileDesc, cmd);
+            fourthLineNewText(locations[1], spiFileDesc, cmd);
 
             // 5) Update the fifth line
-            fifthLineNewText(times[randomIntFrom0To2()], spiFileDesc, cmd);
+            fifthLineNewText(times[1], spiFileDesc, cmd);
 
             // 6) Update the sixth line
             space(spiFileDesc, cmd, WHITE_COLOR, FONT_SIZE_2, FONT_SIZE_2_START_X, SIXTH_LINE_Y, false);
 
             // 7) Update the seventh line
-            seventhLineNewText(locations[randomIntFrom0To2()], spiFileDesc, cmd);
+            seventhLineNewText(locations[2], spiFileDesc, cmd);
 
             // 8) Update the eighth line
-            eighthLineNewText(times[randomIntFrom0To2()], spiFileDesc, cmd);
-
-            sleepForMs(5000);
+            eighthLineNewText(times[2], spiFileDesc, cmd);
 
             // Once we have finished updating the screen, set updateScreenRequest back to false
             // Start of critical section (WRITE)
@@ -149,10 +152,14 @@ void *thread_displaylogic()
             // }
             // // End of critical section
             // pthread_mutex_unlock(&mutex_displaylogic);
-        }
 
-        updateScreenRequest = true; // Need to comment this out
+            setFlagScreenDisplay(false);
+        }
+        unlockDisplayMutex();
     }
+
+    // Set the display to a white background
+    displayRectangle(spiFileDesc, cmd, 0xFF, 0, 319, 0, 239, true);
 
     close(spiFileDesc);
     writeToFile("/sys/class/gpio/gpio113/value", "1");
@@ -196,17 +203,6 @@ void eighthLineNewText(const char* text, int spiFileDesc, uint8_t cmd)
     displayString(text, spiFileDesc, cmd, BLACK_COLOR, FONT_SIZE_2, FONT_SIZE_2_START_X, EIGHTH_LINE_Y, false);
 }
 
-// Get the updateScreenRequest value (true if we need to update, false if we don't)
-bool getUpdateScreenStatus(void)
-{
-    return updateScreenRequest;
-}
-
-// Client requests for the screen to be updated
-void requestUpdateScreen(void)
-{
-    updateScreenRequest = true;
-} 
 
 // Get the status of the thread (true means continue thread, false means stop thread)
 bool getThreadStatus(void) {
@@ -217,57 +213,6 @@ bool getThreadStatus(void) {
 void stopThread(void) {
     continueThread = false;
 }
-
-//void writeToFile(const char* fileName, const char* value)
-//{
-//	FILE *pFile = fopen(fileName, "w");
-//	fprintf(pFile, "%s", value);
-//	fclose(pFile);
-//}
-
-//int readFromFile(char *fileName)
-//{
-//    FILE *pFile = fopen(fileName, "r");
-//    if (pFile == NULL) {
-//        printf("ERROR: Unable to open file (%s) for read\n", fileName);
-//        exit(-1);
-//    }
-//
-//    // Read string (line)
-//    const int MAX_LENGTH = 1024;
-//    char buff[MAX_LENGTH];
-//    fgets(buff, MAX_LENGTH, pFile);
-//
-//    int res = atoi(buff);
-//
-//    // Close
-//    fclose(pFile);
-//    // printf("Read: '%s'\n", buff);
-//    return res;
-//}
-
-//void runCommand(char* command)
-//{
-//    // Execute the shell command (output into pipe)static pthread_t tid_analyzer; // Thread ID
-//    FILE *pipe = popen(command, "r");
-//
-//    // Ignore output of the command; but consume it
-//    // so we don't get an error when closing the pipe.
-//    char buffer[1024];
-//    while (!feof(pipe) && !ferror(pipe)) {
-//        if (fgets(buffer, sizeof(buffer), pipe) == NULL)
-//            break;
-//        // printf("--> %s", buffer); // Uncomment for debugging
-//    }
-//
-//    // Get the exit code from the pipe; non-zero is an error:
-//    int exitCode = WEXITSTATUS(pclose(pipe));
-//    if (exitCode != 0) {
-//        perror("Unable to execute command:");
-//        printf(" command: %s\n", command);
-//        printf(" exit code: %d\n", exitCode);
-//    }
-//}
 
 void sleepForMs(long long delayInMs)
 {
@@ -328,10 +273,18 @@ void shutdown_all_pins(void)
     writeToFile("/sys/class/gpio/gpio111/direction", "in");
 
     // D/C
-    runCommand("cd && cd /sys/class/gpio/gpio48 && config-pin p9.15 default && echo 1 > value && echo in > direction");
+    // writeToFile("/sys/class/gpio/gpio48/ocp:Pk9_15_pinmux/state", "default");
+    writeToFile("/sys/class/gpio/gpio48/state", "default");
+    writeToFile("/sys/class/gpio/gpio48/value", "1");
+    writeToFile("/sys/class/gpio/gpio48/direction", "in");
+
+    // runCommand("cd && cd /sys/class/gpio/gpio48 && config-pin p9.15 default && echo 1 > value && echo in > direction");
 
     // RST
-    runCommand("cd && cd /sys/class/gpio/gpio60 && config-pin p9.12 default && echo 1 > value && echo in > direction");
+    // runCommand("cd && cd /sys/class/gpio/gpio60 && config-pin p9.12 default && echo 1 > value && echo in > direction");
+    writeToFile("/sys/class/gpio/gpio60/state", "default");
+    writeToFile("/sys/class/gpio/gpio60/value", "1");
+    writeToFile("/sys/class/gpio/gpio60/direction", "in");
 }
 
 int SPI_initPort(char* spiDevice)
@@ -867,7 +820,7 @@ void charToDisplay(char currentChar, int spiFileDesc, uint8_t cmd, uint8_t color
             space(spiFileDesc, cmd, 0xFF, fontSize, xStart, yStart, cond); // Assumes that the background color is white
             break;
         default:
-            assert(false);
+            space(spiFileDesc, cmd, 0xFF, fontSize, xStart, yStart, cond);
     }
 }
 
@@ -917,4 +870,34 @@ void displaylogic_cleanup(void)
 {
     // Join the thread
     pthread_join(tid_displaylogic, NULL);
+}
+
+char ** getLocationBuffer(void)
+{
+    return  locations;
+}
+
+char ** getTimeBuffer(void)
+{
+    return times;
+}
+
+bool getFlagScreenDisplay(void)
+{
+    return flagScreenDisplay;
+}
+
+void setFlagScreenDisplay(bool flag)
+{
+    flagScreenDisplay = flag;
+}
+
+bool getNFCOrUpdate(void)
+{
+    return flagNFCOrUpdate;
+}
+
+void setNFCOrUpdate(bool flag)
+{
+    flagNFCOrUpdate = flag;
 }

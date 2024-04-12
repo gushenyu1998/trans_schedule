@@ -43,6 +43,7 @@
 #include <fcntl.h>     // for open()
 #include <unistd.h>    // for close()
 
+#include "displaylogic.h"
 #include "hal/threadsControl.h"
 #include "hal/readNWrite.h"
 #include "hal/usePWM.h"

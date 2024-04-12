@@ -121,7 +121,7 @@ struct transStruct_t *ReadFromTransAPI(int *size, char *APIquery)
                     if (!busSchedule[i].schedule[j].CancelledStop && !busSchedule[i].schedule[j].CancelledTrip && expectedCountDown > 0) // if the schedule or the stop is not cancelled, then add the size of buffer
                     {
                         char *schedule = malloc(sizeof(char) * BUFFER_SIZE);
-                        sprintf(schedule, "%s %s, %smins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedCountdown);
+                        sprintf(schedule, "%s %s %s mins", busSchedule[i].RouteNo, busSchedule[i].schedule[j].Destination, busSchedule[i].schedule[j].ExpectedCountdown);
                         scheduleBuffer[schduleBufferSize].sentence = schedule;
                         scheduleBuffer[schduleBufferSize].schedule_time = time(NULL) + expectedCountDown * 60;
                         schduleBufferSize++;
@@ -147,9 +147,12 @@ void freeTransStruct(int size, transStruct_t *trans_info)
 
 void freeScheduleBuffer(int size, recallSchedule_t *buffer)
 {
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size-1; i++)
     {
-        free(buffer[i].sentence);
+        if (buffer[i].sentence != NULL)
+        {
+            free(buffer[i].sentence);
+        }
     }
 }
 
@@ -170,12 +173,28 @@ void UpdateSchedule(char *API_query)
     // sort the schedule buffer
     qsort(scheduleBuffer, schduleBufferSize, sizeof(recallSchedule_t), sortSchedule);
     //sore the schedule in the buffer by expected countdown
-    for (int i = 0; i < schduleBufferSize; i++)
+
+    lockUpdateMutex();
+    bool flag = getNFCOrUpdate();
+    unlockUpdateMutex();
+    if(flag)
     {
-        if (i > max_display)
-            break;
-        printf("%s\n",scheduleBuffer[i].sentence); // replace this line to the displaying
+        char ** locations = getLocationBuffer();
+        char ** times = getTimeBuffer();
+
+
+        sprintf(locations[0],"%s ", scheduleBuffer[0].sentence);
+        sprintf(times[0]," ");
+        sprintf(locations[1],"%s ", scheduleBuffer[1].sentence);
+        sprintf(times[1]," ");
+        sprintf(locations[2],"%s ", scheduleBuffer[2].sentence);
+        sprintf(times[2]," ");
+
+        lockDisplayMutex();
+        setFlagScreenDisplay(true);
+        unlockDisplayMutex();
     }
+
 }
 
 

@@ -8,6 +8,8 @@
 #include <json-c/json.h>
 #include <stdbool.h>
 #include <time.h>
+#include "hal/threadsControl.h"
+#include "displaylogic.h"
 
 #define BUFFER_SIZE 100
 

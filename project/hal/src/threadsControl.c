@@ -3,8 +3,13 @@
 // Global variables
 bool stop = false;
 
-// Mutexes for useLED and Sampler modules
-pthread_mutex_t mainMutex = PTHREAD_MUTEX_INITIALIZER;
+// Mutexes for Shutdown signal
+static pthread_mutex_t mainMutex = PTHREAD_MUTEX_INITIALIZER;
+
+// Mutex for NFC, Display, and Update
+static pthread_mutex_t displayMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t updateMutex = PTHREAD_MUTEX_INITIALIZER;
+
 pthread_t threads[3];
 void *regularUpdate(void *arg);
 void *NFCSelection();
@@ -95,9 +100,10 @@ void *NFCSelection() {
         if (strcmp(name, "Stop")==0){
             signalShutdown();
             transStruct_t *busStruct = getBusStruct();
-            char ** busSchedule = getBusSchedule();
+            recallSchedule_t * busSchedule = getBusSchedule();
             freeScheduleBuffer(getBusScheduleSize(), busSchedule);
             freeTransStruct(getBusStructSize(), busStruct);
+            free(name);
             return NULL;
         }
         selectScheduleRecall(name);
@@ -121,4 +127,20 @@ void *waitForButton() {
         }
     }
     return NULL;
+}
+
+// lock and unlock the display mutex
+void lockDisplayMutex() {
+    pthread_mutex_lock(&displayMutex);
+}
+void unlockDisplayMutex() {
+    pthread_mutex_unlock(&displayMutex);
+}
+
+// lock and unlock the update mutex
+void lockUpdateMutex() {
+    pthread_mutex_lock(&updateMutex);
+}
+void unlockUpdateMutex() {
+    pthread_mutex_unlock(&updateMutex);
 }

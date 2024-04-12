@@ -24,4 +24,10 @@ void signalShutdown();
 // get the state of if the program shut down
 bool ifShutdown();
 
+void lockDisplayMutex();
+void unlockDisplayMutex();
+
+void lockUpdateMutex();
+void unlockUpdateMutex();
+
 #endif
