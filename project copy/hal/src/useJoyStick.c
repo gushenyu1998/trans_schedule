@@ -1,6 +1,10 @@
 #include "hal/useJoyStick.h"
 #include "hal/useAPI.h"
 #include "displaylogic.h"
+#include "hal/readNWrite.h"
+#include "hal/useNFC.h"
+
+#define MAX_NAME_LENGTH 15  // Define maximum length of the name
 
 void inititalize_JoyStick()
 {
@@ -126,7 +130,12 @@ void selectScheduleRecall(char *name)
     // Start critical section (WRITE)
     lockUpdateMutex();
     setNFCOrUpdate(false);
-    unlockUpdateMutex();
+//    unlockUpdateMutex();
+
+    char buffer[4];
+    unsigned int maxLength = sizeof(buffer);
+    readLineFromFile("/sys/class/gpio/gpio30/value", buffer, maxLength);
+//    printf("Read value: %s\n", buffer);
 
     int busIndex = 0;
     int scheduleIndex = 0;
@@ -139,13 +148,88 @@ void selectScheduleRecall(char *name)
     char ** times = getTimeBuffer();
 
     char *listOfDetection[] = {
-        JOYSTICK_IN_PRESS,
-        JOYSTICK_IN_UP,
-        JOYSTICK_IN_DOWN,
-        JOYSTICK_IN_LEFT,
-        JOYSTICK_IN_RIGHT,
+            JOYSTICK_IN_PRESS,
+            JOYSTICK_IN_UP,
+            JOYSTICK_IN_DOWN,
+            JOYSTICK_IN_LEFT,
+            JOYSTICK_IN_RIGHT,
+            BUTTON_GPIO
     };
     int waitTimes[] = {10000, 10000, 10000, 10000, 10000}; // wait operation for 10s, if no responce in 10s then return
+
+    // check if the button is pressed
+    if (atoi(buffer) == 1)
+    {
+        // Set up the alphabet array
+        char alphabet[26];
+        for (int i = 0; i < 26; i++)
+            alphabet[i] = 'A' + i;
+
+        char set_name[15];
+        for (int i = 0; i < 15; i++)
+            set_name[i] = '\0';  // Initialize the name array
+        set_name[0] = alphabet[0];  // Start with the first alphabet character
+        int nameIndex = 0;
+
+        while(true)
+        {
+            // Update display and print the current name
+            sprintf(locations[0], "Set Name:");
+            sprintf(times[0], "%s", set_name);
+            sprintf(locations[1], " ");
+            sprintf(times[1], " ");
+            sprintf(locations[2], " ");
+            sprintf(times[2], " ");
+            lockDisplayMutex();
+            setFlagScreenDisplay(true);
+            unlockDisplayMutex();
+            char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
+            if ((userInput & (1 << 1)) != 0)
+            {
+                set_name[nameIndex] = (set_name[nameIndex] - 'A' + 1) % 26 + 'A';
+            }
+            if ((userInput & (1 << 2)) != 0)
+            {
+                set_name[nameIndex] = (set_name[nameIndex] - 'A' + 25) % 26 + 'A';
+            }
+            if ((userInput & 1) != 0)
+            {
+                nameIndex++;
+                readLineFromFile("/sys/class/gpio/gpio30/value", buffer, maxLength);
+                if (nameIndex >= 15 || atoi(buffer) == 1) {
+                    break;
+                }
+                if (set_name[nameIndex] == '\0') {
+                    set_name[nameIndex] = 'A';
+                }
+            }
+
+            userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
+
+        }
+        sprintf(times[2], "Tap NFC Card");
+        lockDisplayMutex();
+        setFlagScreenDisplay(true);
+        unlockDisplayMutex();
+        printf("final name: %s\n", set_name);
+        writeToNFC(set_name, 1);
+        recallSchedule_t * scheduleBuffer = getBusSchedule();
+        sprintf(locations[0],"%s ", scheduleBuffer[0].sentence);
+        sprintf(times[0]," ");
+        sprintf(locations[1],"%s ", scheduleBuffer[1].sentence);
+        sprintf(times[1]," ");
+        sprintf(locations[2],"%s ", scheduleBuffer[2].sentence);
+        sprintf(times[2]," ");
+        setNFCOrUpdate(true);
+        unlockUpdateMutex();
+        lockDisplayMutex();
+        setFlagScreenDisplay(true);
+        unlockDisplayMutex();
+        return;
+
+    }
+
+
 
     while (true)
     {
@@ -153,13 +237,13 @@ void selectScheduleRecall(char *name)
         // printf("Which Route you want to wait? %s\n", busStruct[busIndex].RouteNo);
 
         // setup location lines
-        sprintf(locations[0], "Which BUS to take:");
-        sprintf(locations[1], " ");
+        sprintf(locations[1], "Which BUS to take:");
+        sprintf(locations[0], "Hello %s", name);
         sprintf(locations[2], " ");
 
         // setup time lines
-        sprintf(times[0], "%s ", busStruct[busIndex].RouteNo);
-        sprintf(times[1], " ");
+        sprintf(times[1], "%s ", busStruct[busIndex].RouteNo);
+        sprintf(times[0], " ");
         sprintf(times[2], " ");
 
         lockDisplayMutex();
@@ -167,6 +251,8 @@ void selectScheduleRecall(char *name)
         unlockDisplayMutex();
 
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
+        printf("User input: %d\n", userInput);
+
         // user input up
         if ((userInput & (1 << 1)) != 0)
         {
@@ -186,8 +272,21 @@ void selectScheduleRecall(char *name)
         {
             break;
         }
-        if (userInput == 0)
+        if (userInput == 0){
+            recallSchedule_t * scheduleBuffer = getBusSchedule();
+            sprintf(locations[0],"%s ", scheduleBuffer[0].sentence);
+            sprintf(times[0]," ");
+            sprintf(locations[1],"%s ", scheduleBuffer[1].sentence);
+            sprintf(times[1]," ");
+            sprintf(locations[2],"%s ", scheduleBuffer[2].sentence);
+            sprintf(times[2]," ");
+            setNFCOrUpdate(true);
+            unlockUpdateMutex();
+            lockDisplayMutex();
+            setFlagScreenDisplay(true);
+            unlockDisplayMutex();
             return;
+        }
         userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
     }
     waitForGpioEdge(listOfDetection, waitTimes, 5);
@@ -208,6 +307,7 @@ void selectScheduleRecall(char *name)
         unlockDisplayMutex();
 
         char userInput = waitForGpioEdge(listOfDetection, waitTimes, 5);
+        printf("User input2: %d\n", userInput);
         // user input up
         if ((userInput & (1 << 1)) != 0)
         {
@@ -227,8 +327,21 @@ void selectScheduleRecall(char *name)
         {
             break;
         }
-        if (userInput == 0)
+        if (userInput == 0){
+            recallSchedule_t * scheduleBuffer = getBusSchedule();
+            sprintf(locations[0],"%s ", scheduleBuffer[0].sentence);
+            sprintf(times[0]," ");
+            sprintf(locations[1],"%s ", scheduleBuffer[1].sentence);
+            sprintf(times[1]," ");
+            sprintf(locations[2],"%s ", scheduleBuffer[2].sentence);
+            sprintf(times[2]," ");
+            setNFCOrUpdate(true);
+            unlockUpdateMutex();
+            lockDisplayMutex();
+            setFlagScreenDisplay(true);
+            unlockDisplayMutex();
             return;
+        }
         waitForGpioEdge(listOfDetection, waitTimes, 5);
     }
     waitForGpioEdge(listOfDetection, waitTimes, 5);
@@ -272,8 +385,21 @@ void selectScheduleRecall(char *name)
             break;
         }
 
-        if (userInput == 0)
+        if (userInput == 0) {
+            recallSchedule_t * scheduleBuffer = getBusSchedule();
+            sprintf(locations[0],"%s ", scheduleBuffer[0].sentence);
+            sprintf(times[0]," ");
+            sprintf(locations[1],"%s ", scheduleBuffer[1].sentence);
+            sprintf(times[1]," ");
+            sprintf(locations[2],"%s ", scheduleBuffer[2].sentence);
+            sprintf(times[2]," ");
+            setNFCOrUpdate(true);
+            unlockUpdateMutex();
+            lockDisplayMutex();
+            setFlagScreenDisplay(true);
+            unlockDisplayMutex();
             return;
+        }
         waitForGpioEdge(listOfDetection, waitTimes, 5);
     }
     bool flag = false;
@@ -330,7 +456,7 @@ void selectScheduleRecall(char *name)
     sprintf(locations[2],"%s ", scheduleBuffer[2].sentence);
     sprintf(times[2]," ");
 
-    lockUpdateMutex();
+//    lockUpdateMutex();
     setNFCOrUpdate(true);
     unlockUpdateMutex();
 

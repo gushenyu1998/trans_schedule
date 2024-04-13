@@ -166,6 +166,9 @@ int sortSchedule(const void *a, const void *b)
 // this function should call every minutes
 void UpdateSchedule(char *API_query)
 {
+    lockUpdateMutex();
+    bool flag = getNFCOrUpdate();
+
     freeTransStruct(busStructSize, busStruct);
     freeScheduleBuffer(schduleBufferSize, scheduleBuffer);
     busStruct = ReadFromTransAPI(&busStructSize, API_query);
@@ -173,10 +176,8 @@ void UpdateSchedule(char *API_query)
     // sort the schedule buffer
     qsort(scheduleBuffer, schduleBufferSize, sizeof(recallSchedule_t), sortSchedule);
     //sore the schedule in the buffer by expected countdown
-
-    lockUpdateMutex();
-    bool flag = getNFCOrUpdate();
     unlockUpdateMutex();
+
     if(flag)
     {
         char ** locations = getLocationBuffer();
