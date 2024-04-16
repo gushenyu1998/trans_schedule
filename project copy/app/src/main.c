@@ -1,3 +1,18 @@
+// Main file for the application
+// Read Arguments from the command line
+// Initialize the Components and Clean up the Components
+
+// Call sudo ./Project [BUS_STOP_ID]
+
+// Assume pins already configured for SPI
+// E.g. for SPI1, CS0:
+// (bbg)$ config-pin P9_28 spi_cs
+// (bbg)$ config-pin P9_31 spi_sclk
+// (bbg)$ config-pin P9_29 spi
+// (bbg)$ config-pin P9_30 spi
+// P9_48 == D/C
+// P9_60 == RST
+
 #include "main.h"
 #include <flite/flite.h>
 #include <alsa/asoundlib.h>
@@ -9,14 +24,7 @@
 #include "displaylogic.h"
 #include "alphabet.h"
 
-// Assume pins already configured for SPI
-// E.g. for SPI1, CS0:
-// (bbg)$ config-pin P9_28 spi_cs
-// (bbg)$ config-pin P9_31 spi_sclk
-// (bbg)$ config-pin P9_29 spi
-// (bbg)$ config-pin P9_30 spi
-// P9_48 == D/C
-// P9_60 == RST
+
 #define SPI_DEV_BUS0_CS0 "/dev/spidev0.0"
 #define SPI_DEV_BUS1_CS0 "/dev/spidev1.0"
 #define SPI_DEV_BUS1_CS1 "/dev/spidev1.1"
@@ -62,37 +70,17 @@ int main(int argc, char *argv[])
         printf("No Argument Provided\n");
         return 1;
     }
-//	int size;
-//	char *calling = "https://api.translink.ca/rttiapi/v1/stops/55713/estimates?apikey=JoKWW8MHpsoc04lKVKnA&count=2";
-//	transStruct_t *a = (transStruct_t *) ReadFromTransAPI(&size, calling);
-//	freeTransStruct(size, a);
-
-
-    // // ---------------------------- TTS ----------------------------
-
-    // initialize_flite();
-    // cst_voice *voice = setup_voice();
-
-    // const char *text = "Bus fifty nine departing soon at stop one";
-    // synthesize_text_to_file(text, voice, "play");
-
-    // // ---------------------------- NFC ----------------------------
 
     init_nfc();
-//    char inputString[] = "Santa";
     inititalize_JoyStick();
     startThreads(argv[1]);
 
-    // For random
-//    srand(time(NULL));
     printf("Before display init\n");
     displaylogic_init();
     printf("After display init\n");
 
     joinThreads();
-    // Cleanup
     displaylogic_cleanup();
-    printf("---------------------------------------------------\n");
-    // shutdown_all_pins();
+
 }
 

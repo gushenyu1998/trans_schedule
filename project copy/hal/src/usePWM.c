@@ -1,3 +1,6 @@
+// Header File to use PWM
+// Use the PWM to control the LED
+
 #include "hal/usePWM.h"
 
 void initialize_PWM()

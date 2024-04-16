@@ -1,3 +1,6 @@
+// Header File for useJoyStick.c
+// Use the JoyStick to control and read the input from the JoyStick
+
 #ifndef _USEJOYSTICK_H_
 #define _USEJOYSTICK_H_
 

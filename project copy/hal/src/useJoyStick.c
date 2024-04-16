@@ -1,3 +1,6 @@
+// Source File for useJoyStick.c
+// Use the JoyStick to control and read the input from the JoyStick
+
 #include "hal/useJoyStick.h"
 #include "hal/useAPI.h"
 #include "displaylogic.h"
@@ -48,6 +51,7 @@ void inititalize_JoyStick()
  * Return:
  *  char list the triggered GPIO in bitwise. 0 bit is not triggered, 1 is triggered
  */
+
 char waitForGpioEdge(char **fileNamesForGpioValue, int *waitMilliseconds, int numGpios)
 {
     int epollfd = epoll_create(1);
@@ -157,7 +161,7 @@ void selectScheduleRecall(char *name)
     };
     int waitTimes[] = {10000, 10000, 10000, 10000, 10000}; // wait operation for 10s, if no responce in 10s then return
 
-    // check if the button is pressed
+    // check if the button is pressed, allow user to set the name
     if (atoi(buffer) == 1)
     {
         // Set up the alphabet array
@@ -228,8 +232,6 @@ void selectScheduleRecall(char *name)
         return;
 
     }
-
-
 
     while (true)
     {

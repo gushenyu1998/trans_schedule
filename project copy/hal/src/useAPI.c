@@ -1,3 +1,6 @@
+// Source file for useAPI.c
+// Used to call the API and update the schedule
+
 #include "hal/useAPI.h"
 
 int max_display = 3;

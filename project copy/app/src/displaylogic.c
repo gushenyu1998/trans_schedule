@@ -1,3 +1,7 @@
+// Source code for displaylogic.c
+// This file contains the implementation of the displaylogic thread
+// to control the display.
+
 #include "displaylogic.h"
 #include "hal/threadsControl.h"
 // Assume pins already configured for SPI

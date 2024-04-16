@@ -1,3 +1,7 @@
+// Header File for readNWrite.c
+// Read and write to System Files
+// Execute Linux Commands
+
 #ifndef _READNWRITE_H_
 #define _READNWRITE_H_
 #include <stdio.h>

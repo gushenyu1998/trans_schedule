@@ -1,6 +1,8 @@
-#include "alphabet.h"
+// Source file for alphabet.c
+// Used to write individual characters on the LED Display
+// Note: All characters display a 5:7 aspect ratio (width:height). All characters are uppercase
 
-// Note: All characters display a 5:7 aspect ratio (width:height)
+#include "alphabet.h"
 
 // displayRectangle(spiFileDesc, cmd, color, xStart, xEnd, yStart, yEnd); 
 

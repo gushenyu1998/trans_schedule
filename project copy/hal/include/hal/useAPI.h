@@ -1,3 +1,6 @@
+// Header file for useAPI.c
+// Used to call the API and update the schedule
+
 #ifndef _API_PARSING_
 #define _API_PARSING_
 
