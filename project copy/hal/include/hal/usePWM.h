@@ -1,3 +1,6 @@
+// Header File to use PWM
+// Use the PWM to control the LED
+
 #ifndef _LED_H_
 #define _LED_H_
 #include <stdio.h>

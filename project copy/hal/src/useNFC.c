@@ -1,6 +1,5 @@
-//
-// Created by Jacky Lim on 2024-04-09.
-//
+// Header file for useNFC.c
+// Used to read and write to NFC
 
 #include "../include/hal/useNFC.h"
 

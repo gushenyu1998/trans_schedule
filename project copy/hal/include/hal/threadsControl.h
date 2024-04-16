@@ -1,3 +1,6 @@
+// Header file for threadsControl.c
+// Control Threads for fetching data from API, and JoyStick/Buttons
+
 #ifndef _THREADCONTROL_H_
 #define _THREADCONTROL_H_
 

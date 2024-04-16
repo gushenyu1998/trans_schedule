@@ -1,6 +1,5 @@
-// Sample application module
-// Normally, you might create a module such as this for each module in
-// the application that does some high-level task; perhaps has its own thread.
+// Header file for displaylogic.c
+// Thread used to write/refresh text on the LED Display For Different Lines
 
 #ifndef _DISPLAYLOGIC_H_
 #define _DISPLAYLOGIC_H_

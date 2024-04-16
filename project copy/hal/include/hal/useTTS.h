@@ -1,6 +1,5 @@
-//
-// Created by parallels on 4/9/24.
-//
+// Header File to use Flite Text to Speech
+// Setup and Play the Text to Speech
 
 #include <flite/flite.h>
 

@@ -1,6 +1,6 @@
-// Sample application module
-// Normally, you might create a module such as this for each module in
-// the application that does some high-level task; perhaps has its own thread.
+// Header file for alphabet.c
+// Used to write individual characters on the LED Display
+// Note: All characters display a 5:7 aspect ratio (width:height). All characters are uppercase
 
 #ifndef _ALPHABET_H_
 #define _ALPHABET_H_
@@ -9,12 +9,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "displaylogic.h"
-
-// void badmath_init(void);
-// short badmath_factorial(int n);
-// void badmath_cleanup(void);
-
-// Note: All characters display a 5:7 aspect ratio (width:height). All characters are uppercase
 
 // A
 void A(int spiFileDesc, uint8_t cmd, uint8_t color, int fontSize, int xStart, int yStart, bool cond);

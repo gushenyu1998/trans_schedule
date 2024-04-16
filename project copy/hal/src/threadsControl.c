@@ -1,3 +1,6 @@
+// Source file for threadsControl.c
+// Control Threads for fetching data from API, and JoyStick/Buttons
+
 #include "hal/threadsControl.h"
 #include "hal/useNFC.h"
 #include "hal/useTTS.h"
@@ -22,14 +25,9 @@ void *waitForButton();
 
 void speak_and_play(const char *text) {
     char command[256];
-    //snprintf(command, sizeof(command), "flite -v en-uk -s 135 '%s' > /dev/null 2>&1", text);
-    //snprintf(command, sizeof(command), "espeak '%s' -w test.wav", text);
     snprintf(command, sizeof(command), "flite '%s' > /dev/null 2>&1", text);
-//    printf("Command: %s\n", command);
     system(command);
 }
-
-
 
 // Start all threads such as the udp and acclerometer
 void startThreads(char* API_query) {

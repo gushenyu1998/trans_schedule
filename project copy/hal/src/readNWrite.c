@@ -1,3 +1,7 @@
+// Source File for readNWrite.c
+// Read and write to System Files
+// Execute Linux Commands
+
 #include "hal/readNWrite.h"
 
 /**
